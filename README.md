@@ -30,7 +30,7 @@
 
 ### Test Networks
 
-Infura or hosting own local Node
+Infura or host own node
 
 - Ropsten:
   - most similar to main net ∴ use occasionally
