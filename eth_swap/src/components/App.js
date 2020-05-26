@@ -40,7 +40,7 @@ const App = () => {
 
       const networkId = await web3.eth.net.getId()
 
-      // Load Token
+      // Load Token Smart Contract
       const tokenData = Token.networks[networkId]
       if (tokenData) {
         const token = new web3.eth.Contract(Token.abi, tokenData.address)
@@ -51,11 +51,40 @@ const App = () => {
         window.alert('Token contract not deployed to detected network')
       }
 
-      // Load EthSwap
+      // Load EthSwap Smart Contract
       const ethSwapData = EthSwap.networks[networkId]
       if (ethSwapData) {
         const ethSwap = new web3.eth.Contract(EthSwap.abi, ethSwapData.address)
         setEthSwap(ethSwap)
+
+        // ethSwap.events
+        //   .TokensPurchase({})
+        //   .on('data', async (event) => {
+        //     console.log(event.returnValues)
+        //     setEthBalance(
+        //       (
+        //         parseInt(ethBalance) -
+        //         parseInt(event.returnValues.amount.toString()) / parseInt(event.returnValues.rate.toString())
+        //       ).toString()
+        //     )
+        //     console.log('tokenBalance', tokenBalance)
+        //     setTokenBalance((parseInt(tokenBalance) + parseInt(event.returnValues.amount.toString())).toString())
+        //   })
+        //   .on('error', console.error)
+
+        // ethSwap.events
+        //   .TokensSold({})
+        //   .on('data', async (event) => {
+        //     console.log(event.returnValues)
+        //     setTokenBalance((parseInt(tokenBalance) - parseInt(event.returnValues.amount.toString())).toString())
+        //     setEthBalance(
+        //       (
+        //         parseInt(ethBalance) +
+        //         parseInt(event.returnValues.amount.toString()) / parseInt(event.returnValues.rate.toString())
+        //       ).toString()
+        //     )
+        //   })
+        //   .on('error', console.error)
       } else {
         window.alert('EthSwap contract not deployed to detected network')
       }

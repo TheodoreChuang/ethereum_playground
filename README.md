@@ -55,3 +55,8 @@ Infura or host own node
     - takes block time!! ∴ think about the UX
     - returns a transaction hash
     - cost gas
+  - Nested Dynamic Arrays
+    - OK in Solidity
+    - Doesn't work in ABI/JS/Web3
+    - String are stored as an array of chars ∴ an Array of Strings
+    - experimental feature: pragma experimental ABIEncoderV2;
