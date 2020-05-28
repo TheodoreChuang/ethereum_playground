@@ -12,4 +12,4 @@ TODO:
     - either have each entry deposit a fixed amount
     - or have weighted chance of winning based on deposit / total
 
-Deployed on Rinkeby at: TBD
+Deployed on Rinkeby at: 0x78126D0ab86bc89b7eD8Df8f84e11EDe66538d9F
