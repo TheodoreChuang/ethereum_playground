@@ -1,2 +1,5 @@
-# Build
+# Smart Contracs=ts
 ethereum/build/*
+
+# Client App
+.next

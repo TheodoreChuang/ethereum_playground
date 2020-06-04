@@ -22,7 +22,8 @@
   "scripts": {
     "test": "mocha",
     "compile-contracts": "cd ethereum && node compile.js",
-    "deploy-contracts": "cd ethereum && node compile.js && node deploy.js"
+    "deploy-contracts": "cd ethereum && node compile.js && node deploy.js",
+    "dev": "next dev"
   },
   "author": "",
   "license": "ISC"
