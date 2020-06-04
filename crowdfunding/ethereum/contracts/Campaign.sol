@@ -21,8 +21,8 @@ contract Campaign {
         uint256 value;
         address payable recipient;
         bool complete;
-        mapping(address => bool) approvals;
         uint256 approvalCount;
+        mapping(address => bool) approvals;
     }
 
     address public manager;
@@ -44,7 +44,7 @@ contract Campaign {
         minimumContribution = _minimumContribution;
     }
 
-    function contribution() public payable {
+    function contribute() public payable {
         require(
             msg.value >= minimumContribution,
             "Contribution does not meet the minimum amount"

@@ -6,20 +6,23 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "fs-extra": "^9.0.0",
-    "ganache-cli": "^6.9.1",
     "next": "^9.4.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.88.2",
-    "solc": "^0.6.8",
     "web3": "^1.2.8"
   },
   "devDependencies": {
-    "mocha": "^7.2.0"
+    "@truffle/hdwallet-provider": "^1.0.35",
+    "ganache-cli": "^6.9.1",
+    "mocha": "^7.2.0",
+    "solc": "^0.6.8"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "compile-contracts": "cd ethereum && node compile.js",
+    "deploy-contracts": "cd ethereum && node compile.js && node deploy.js"
   },
   "author": "",
   "license": "ISC"
