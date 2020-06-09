@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Router from 'next/router'
 import { Form, Button, Input, Message } from 'semantic-ui-react'
 
 import web3 from '../../ethereum/web3'
@@ -17,6 +18,8 @@ const CampaignNew = () => {
     try {
       const accounts = await web3.eth.getAccounts()
       await factory.methods.createCampaign(minimumContribution).send({ from: accounts[0] })
+
+      Router.push('/')
     } catch (err) {
       setErrorMessage(err.message)
     }

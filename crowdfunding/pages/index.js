@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import { Card, Button } from 'semantic-ui-react'
 
 import factory from '../ethereum/factory'
@@ -8,8 +9,15 @@ const renderCampaigns = (campaigns) => {
   const campaignsList = campaigns.map((address) => {
     return {
       header: address,
-      description: <a>View Campaign</a>,
+      description: (
+        <Link href="/campaigns/[campaign]" as={`/campaigns/${address}`}>
+          <a>View Campaign</a>
+        </Link>
+      ),
       fluid: true,
+      style: {
+        marginLeft: '0',
+      },
     }
   })
   return <Card.Group items={campaignsList} />
@@ -20,7 +28,11 @@ const CampaignIndex = ({ campaigns }) => (
     <>
       <div>
         <h3>Open Campaigns</h3>
-        <Button floated="right" content="Create Campaign" icon="add" primary />
+        <Link href="/campaigns/new">
+          <a>
+            <Button floated="right" content="Create Campaign" icon="add" primary />
+          </a>
+        </Link>
         {renderCampaigns(campaigns)}
       </div>
     </>
