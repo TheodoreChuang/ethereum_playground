@@ -10,7 +10,10 @@ Decentralized crowdfunding platform.
 
 ## Smart Contracts
 
-Campaign Factory deployed on Rinkeby at: 0x7E8719ccD5cE88fB719A668C1C1Db757E911d60B
+Campaign Factory v1 deployed on Rinkeby at: 0x7E8719ccD5cE88fB719A668C1C1Db757E911d60B
+Campaign Factory v2 deployed on Rinkeby at: 0xBe2277a1F01F08aA6909B72653aA92d9D80e551f
+
+- adding getSummary(), getRequestsCount()
 
 ## Client App
 

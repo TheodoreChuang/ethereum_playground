@@ -34,7 +34,7 @@ describe('Campaign Contract', () => {
     it('marks contract creator as the campaign manager', async () => {
       const manager = await campaign.methods.manager().call()
 
-      assert.equal(accounts[0], manager)
+      assert.strictEqual(manager, accounts[0])
     })
   })
 
@@ -63,9 +63,9 @@ describe('Campaign Contract', () => {
         .send({ from: accounts[0], gas: '1000000' })
 
       const request = await campaign.methods.requests(0).call()
-      assert.equal('Buy batteries', request.description)
-      assert.equal(false, request.complete)
-      assert.equal(0, request.approvalCount)
+      assert.strictEqual(request.description, 'Buy batteries')
+      assert.strictEqual(request.complete, false)
+      assert.strictEqual(request.approvalCount, '0')
     })
 
     it('flow from create to finalize', async () => {
@@ -85,7 +85,23 @@ describe('Campaign Contract', () => {
 
       let weiBalance = await web3.eth.getBalance(accounts[2])
       ethBalance = web3.utils.fromWei(weiBalance, 'ether')
-      assert.equal(parseFloat(ethBalance), 105)
+      assert.strictEqual(parseFloat(ethBalance), 105)
+    })
+  })
+
+  describe('getSummary()', () => {
+    it('gets a summary of a campaign', async () => {
+      await campaign.methods
+        .createRequest('Buy batteries', '100', accounts[1])
+        .send({ from: accounts[0], gas: '1000000' })
+
+      const summary = await campaign.methods.getSummary().call()
+
+      assert.strictEqual(summary[0], '100')
+      assert.strictEqual(summary[1], '0')
+      assert.strictEqual(summary[2], '1')
+      assert.strictEqual(summary[3], '0')
+      assert.strictEqual(summary[4], accounts[0])
     })
   })
 })
