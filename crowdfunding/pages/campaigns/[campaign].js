@@ -1,11 +1,12 @@
-import React from 'react'
-import Link from 'next/link'
-import { Card, Grid, Button } from 'semantic-ui-react'
+import React from 'react';
+import PropTypes from 'prop-types';
+import Link from 'next/link';
+import { Card, Grid, Button } from 'semantic-ui-react';
 
-import web3 from '../../ethereum/web3'
-import campaign from '../../ethereum/campaign'
-import Layout from '../../components/Layout'
-import ContributeForm from '../../components/ContributeForm'
+import web3 from '../../ethereum/web3';
+import campaign from '../../ethereum/campaign';
+import Layout from '../../components/Layout';
+import ContributeForm from '../../components/ContributeForm';
 
 const renderCards = ({ minimumContribution, balance, requestsCount, approversCount, manager }) => {
   const items = [
@@ -36,10 +37,10 @@ const renderCards = ({ minimumContribution, balance, requestsCount, approversCou
       meta: 'Campaign Balance (ether)',
       description: 'The balance is how much funds this campaign has left to spend.',
     },
-  ]
+  ];
 
-  return <Card.Group items={items} />
-}
+  return <Card.Group items={items} />;
+};
 
 const CampaignShow = (props) => {
   return (
@@ -64,12 +65,12 @@ const CampaignShow = (props) => {
         </Grid.Row>
       </Grid>
     </Layout>
-  )
-}
+  );
+};
 
 export const getServerSideProps = async (ctx) => {
-  const campaignInstance = campaign(ctx.params.campaign)
-  const summary = await campaignInstance.methods.getSummary().call()
+  const campaignInstance = campaign(ctx.params.campaign);
+  const summary = await campaignInstance.methods.getSummary().call();
 
   return {
     props: {
@@ -80,7 +81,19 @@ export const getServerSideProps = async (ctx) => {
       approversCount: summary[3],
       manager: summary[4],
     },
-  }
-}
+  };
+};
 
-export default CampaignShow
+export default CampaignShow;
+
+renderCards.propTypes = {
+  minimumContribution: PropTypes.string,
+  balance: PropTypes.string,
+  requestsCount: PropTypes.string,
+  approversCount: PropTypes.string,
+  manager: PropTypes.string,
+};
+
+CampaignShow.propTypes = {
+  address: PropTypes.string,
+};

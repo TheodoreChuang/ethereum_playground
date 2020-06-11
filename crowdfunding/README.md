@@ -26,3 +26,13 @@ Why Next.js? Because our users may not be using MetaMask but we still want them 
 - A way to inactive a campaign and no longer accept contributions, etc. (hard or soft?)
   - A way to proportionally refund any remaining funds
 - Should it handle insufficient funds to finalizes a Request? currently fails and reverts
+
+### Dev
+
+```bash
+npm install --save-dev eslint eslint-config-prettier eslint-plugin-prettier eslint-plugin-react eslint-plugin-react-hooks prettier husky lint-staged
+npm i prop-types
+```
+
+PropTypes:
+https://blog.logrocket.com/validating-react-component-props-with-prop-types-ef14b29963fc/

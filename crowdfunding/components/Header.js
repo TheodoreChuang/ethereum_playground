@@ -1,6 +1,6 @@
-import React from 'react'
-import Link from 'next/link'
-import { Menu } from 'semantic-ui-react'
+import React from 'react';
+import Link from 'next/link';
+import { Menu } from 'semantic-ui-react';
 
 const Header = () => (
   <Menu style={{ marginTop: '10px' }}>
@@ -17,6 +17,6 @@ const Header = () => (
       </Link>
     </Menu.Menu>
   </Menu>
-)
+);
 
-export default Header
+export default Header;

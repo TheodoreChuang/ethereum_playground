@@ -1,18 +1,18 @@
 // // require('dotenv').config()
-import Web3 from 'web3'
+import Web3 from 'web3';
 
-let web3
+let web3;
 
 if (typeof window !== 'undefined' && typeof window.web3 !== 'undefined') {
   // in browser and MetaMask running
-  web3 = new Web3(window.web3.currentProvider)
+  web3 = new Web3(window.web3.currentProvider);
 } else {
   // on server or use not running MetaMask
-  const provider = new Web3.providers.HttpProvider('https://rinkeby.infura.io/v3/d60aea4172c948168e29647a48f311fd')
-  web3 = new Web3(provider)
+  const provider = new Web3.providers.HttpProvider('https://rinkeby.infura.io/v3/d60aea4172c948168e29647a48f311fd');
+  web3 = new Web3(provider);
 }
 
-export default web3
+export default web3;
 
 // import Web3 from 'web3'
 

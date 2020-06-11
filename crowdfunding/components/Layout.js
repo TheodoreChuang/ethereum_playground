@@ -1,7 +1,8 @@
-import React from 'react'
-import { Container } from 'semantic-ui-react'
-import Head from 'next/head'
-import Header from './Header'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Container } from 'semantic-ui-react';
+import Head from 'next/head';
+import Header from './Header';
 
 const Layout = (props) => {
   return (
@@ -12,7 +13,11 @@ const Layout = (props) => {
       <Header />
       {props.children}
     </Container>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;
+
+Layout.propTypes = {
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
+};

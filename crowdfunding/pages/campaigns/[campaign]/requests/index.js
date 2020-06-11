@@ -1,5 +1,5 @@
-import React from 'react'
+import React from 'react';
 
-const Requests = () => <div>Request</div>
+const Requests = () => <div>Request</div>;
 
-export default Requests
+export default Requests;

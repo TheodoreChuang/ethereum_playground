@@ -1,30 +1,30 @@
-import React, { useState } from 'react'
-import Router from 'next/router'
-import { Form, Button, Input, Message } from 'semantic-ui-react'
+import React, { useState } from 'react';
+import Router from 'next/router';
+import { Form, Button, Input, Message } from 'semantic-ui-react';
 
-import web3 from '../../ethereum/web3'
-import factory from '../../ethereum/factory'
-import Layout from '../../components/Layout'
+import web3 from '../../ethereum/web3';
+import factory from '../../ethereum/factory';
+import Layout from '../../components/Layout';
 
 const CampaignNew = () => {
-  const [minimumContribution, setMinimumContribution] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
+  const [minimumContribution, setMinimumContribution] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
-    setErrorMessage('')
-    setLoading(true)
+    event.preventDefault();
+    setErrorMessage('');
+    setLoading(true);
     try {
-      const accounts = await web3.eth.getAccounts()
-      await factory.methods.createCampaign(minimumContribution).send({ from: accounts[0] })
+      const accounts = await web3.eth.getAccounts();
+      await factory.methods.createCampaign(minimumContribution).send({ from: accounts[0] });
 
-      Router.push('/')
+      Router.push('/');
     } catch (err) {
-      setErrorMessage(err.message)
+      setErrorMessage(err.message);
     }
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   return (
     <Layout>
@@ -45,7 +45,7 @@ const CampaignNew = () => {
         </Button>
       </Form>
     </Layout>
-  )
-}
+  );
+};
 
-export default CampaignNew
+export default CampaignNew;
