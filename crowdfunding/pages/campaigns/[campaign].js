@@ -1,7 +1,9 @@
 import React from 'react'
+import Link from 'next/link'
+import { Card, Grid, Button } from 'semantic-ui-react'
+
 import web3 from '../../ethereum/web3'
-import { Card, Grid } from 'semantic-ui-react'
-import getCampaign from '../../ethereum/campaign'
+import campaign from '../../ethereum/campaign'
 import Layout from '../../components/Layout'
 import ContributeForm from '../../components/ContributeForm'
 
@@ -47,7 +49,17 @@ const CampaignShow = (props) => {
         <Grid.Row>
           <Grid.Column width={10}>{renderCards(props)}</Grid.Column>
           <Grid.Column width={6}>
-            <ContributeForm />
+            <ContributeForm address={props.address} />
+          </Grid.Column>
+        </Grid.Row>
+
+        <Grid.Row>
+          <Grid.Column>
+            <Link href="/campaigns/[campaign]/requests" as={`/campaigns/${props.address}/requests`}>
+              <a>
+                <Button primary>View Requests</Button>
+              </a>
+            </Link>
           </Grid.Column>
         </Grid.Row>
       </Grid>
@@ -56,8 +68,8 @@ const CampaignShow = (props) => {
 }
 
 export const getServerSideProps = async (ctx) => {
-  const campaign = getCampaign(ctx.params.campaign)
-  const summary = await campaign.methods.getSummary().call()
+  const campaignInstance = campaign(ctx.params.campaign)
+  const summary = await campaignInstance.methods.getSummary().call()
 
   return {
     props: {
