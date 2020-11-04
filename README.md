@@ -60,3 +60,9 @@ Infura or host own node
     - Doesn't work in ABI/JS/Web3
     - String are stored as an array of chars ∴ an Array of Strings
     - experimental feature: pragma experimental ABIEncoderV2;
+
+## Articles:
+
+Intro - https://blog.b9lab.com/unpacking-the-ethereum-stack-for-developers-c1be1dc41c06
+Basic CRUD - https://medium.com/robhitchens/solidity-crud-part-1-824ffa69509a
+Simply State Machine - https://medium.com/coinmonks/state-machines-in-solidity-9e2d8a6d7a11
