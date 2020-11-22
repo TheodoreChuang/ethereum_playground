@@ -40,15 +40,15 @@ describe('Campaign Contract', () => {
 
   describe('contribute()', () => {
     it('allows people to contribute to a campaign and marks them as approvers', async () => {
-      await campaign.methods.contribute().send({ from: accounts[1], value: '200' });
+      await campaign.methods.contribute().send({ from: accounts[0], value: '200' });
 
-      const isContributor = await campaign.methods.approvers(accounts[1]).call();
+      const isContributor = await campaign.methods.approvers(accounts[0]).call();
       assert(isContributor);
     });
 
     it('requires contributions to meet the set minimum value', async () => {
       try {
-        await campaign.methods.contribute().send({ from: accounts[1], value: '42' });
+        await campaign.methods.contribute().send({ from: accounts[0], value: '42' });
         assert(false);
       } catch (err) {
         assert(err);
@@ -59,7 +59,7 @@ describe('Campaign Contract', () => {
   describe('campaign requests', () => {
     it('manager can createRequest() a payment request', async () => {
       await campaign.methods
-        .createRequest('Buy batteries', '100', accounts[1])
+        .createRequest('Buy batteries', '100', accounts[0])
         .send({ from: accounts[0], gas: '1000000' });
 
       const request = await campaign.methods.requests(0).call();
@@ -70,7 +70,7 @@ describe('Campaign Contract', () => {
 
     it('flow from create to finalize', async () => {
       // New contribution
-      await campaign.methods.contribute().send({ from: accounts[1], value: web3.utils.toWei('10', 'ether') });
+      await campaign.methods.contribute().send({ from: accounts[0], value: web3.utils.toWei('10', 'ether') });
 
       // Create a new Request, pays account[2]
       await campaign.methods
@@ -78,7 +78,7 @@ describe('Campaign Contract', () => {
         .send({ from: accounts[0], gas: '1000000' });
 
       // Contributors can approve Requests
-      await campaign.methods.approveRequest(0).send({ from: accounts[1], gas: '1000000' });
+      await campaign.methods.approveRequest(0).send({ from: accounts[0], gas: '1000000' });
 
       // Manager can finalize a request
       await campaign.methods.finalizeRequest(0).send({ from: accounts[0], gas: '1000000' });
@@ -92,7 +92,7 @@ describe('Campaign Contract', () => {
   describe('getSummary()', () => {
     it('gets a summary of a campaign', async () => {
       await campaign.methods
-        .createRequest('Buy batteries', '100', accounts[1])
+        .createRequest('Buy batteries', '100', accounts[0])
         .send({ from: accounts[0], gas: '1000000' });
 
       const summary = await campaign.methods.getSummary().call();
