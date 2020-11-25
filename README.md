@@ -4,6 +4,26 @@
 
 [![](https://mermaid.ink/img/eyJjb2RlIjoiZ3JhcGggVERcbkFbU291cmNlIENvZGUgKi5zb2xdIFxuLS0-IEIoU29saWRpdHkgQ29tcGlsZXIpXG5CIC0tPiBDW0FCSV1cbkIgLS0-IERbQnl0ZWNvZGVdXG5DIC0tPiBFW1dlYjNdXG5EIC0tPnxEZXBsb3l8IEZbQ29udHJhY3QgSW5zdGFuY2Ugb24gbmV0d29yay9sb2NhbF1cbkUgLS0-IEZcbiIsIm1lcm1haWQiOnsidGhlbWUiOiJkZWZhdWx0In0sInVwZGF0ZUVkaXRvciI6ZmFsc2V9)](https://mermaid-js.github.io/mermaid-live-editor/#/edit/eyJjb2RlIjoiZ3JhcGggVERcbkFbU291cmNlIENvZGUgKi5zb2xdIFxuLS0-IEIoU29saWRpdHkgQ29tcGlsZXIpXG5CIC0tPiBDW0FCSV1cbkIgLS0-IERbQnl0ZWNvZGVdXG5DIC0tPiBFW1dlYjNdXG5EIC0tPnxEZXBsb3l8IEZbQ29udHJhY3QgSW5zdGFuY2Ugb24gbmV0d29yay9sb2NhbF1cbkUgLS0-IEZcbiIsIm1lcm1haWQiOnsidGhlbWUiOiJkZWZhdWx0In0sInVwZGF0ZUVkaXRvciI6ZmFsc2V9)
 
+### Development with Truffle
+
+#### External Dependencies
+
+- ganache
+
+#### Set Up
+
+Run Ganache application (quick start)
+`$ truffle migrate --reset`
+
+#### Testing Contracts
+
+Run Ganache application (quick start)
+`$ truffle test`
+
+#### Debugging
+
+`$ truffle console`
+
 ### Custom Scaffold
 
 ./compile.js
