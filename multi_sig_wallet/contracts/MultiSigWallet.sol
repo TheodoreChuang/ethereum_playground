@@ -3,7 +3,7 @@ pragma experimental ABIEncoderV2;
 
 contract MultiSigWallet {
     address[] public approvers;
-    uint256 quorum;
+    uint256 public quorum;
 
     struct Transfer {
         uint256 id;
@@ -47,13 +47,13 @@ contract MultiSigWallet {
     }
 
     function approveTransfer(uint256 id) external onlyApprover() {
-        require(transfers[id].sent == false, "Transfer has already been sent");
+        require(transfers[id].sent == false, "transfer has already been sent");
         require(
             approvals[msg.sender][id] == false,
-            "Transfer has already been approved"
+            "transfer has already been approved"
         );
 
-        approvals[msg.sender][id] == true;
+        approvals[msg.sender][id] = true;
         transfers[id].approvals++;
 
         if (transfers[id].approvals >= quorum) {

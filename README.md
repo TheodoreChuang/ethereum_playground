@@ -11,7 +11,7 @@ Truffle is a CLI tool. The workflow is like this:
 Start a Truffle project with `truffle init`
 Run a local development Blockchain with `truffle develop` (Truffle comes with its own version of Ganache)
 Deploy your smart contract with `truffle migrate --reset` (the reset flag is necessary to avoid some caching problems)
-Run smart contract test with `truffle test`
+Run smart contract test with `truffle test` (includes web3 and BN.js)
 Deploy your frontend
 
 ### How to use Infura?
