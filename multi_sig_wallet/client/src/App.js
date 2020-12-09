@@ -21,7 +21,7 @@ const App = () => {
 
   useEffect(() => {
     (async () => {
-      const web3 = getWeb3();
+      const web3 = await getWeb3();
       const [accounts, wallet] = await Promise.all([
         web3.eth.getAccounts(),
         getWallet(web3),

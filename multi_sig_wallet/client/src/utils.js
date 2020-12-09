@@ -14,7 +14,27 @@ const getWallet = async (web3) => {
  * Get instance of Web3
  */
 const getWeb3 = () => {
-  return new Web3("http://localhost:9545");
+  return new Promise((resolve, reject) => {
+    // ensure js has been loaded
+    window.addEventListener("load", async () => {
+      // is MetaMask present? checks if there is a provider object
+      if (window.ethereum) {
+        const web3 = new Web3(window.ethereum);
+        try {
+          // user needs to grant the dapp access to their MetaMask
+          await window.ethereum.enable();
+          resolve(web3);
+        } catch (error) {
+          reject(error);
+        }
+        // if user is using an older version of MetaMask
+      } else if (window.web3) {
+        resolve(window.web3);
+      } else {
+        reject("Must install MetaMask to use this dapp");
+      }
+    });
+  });
 };
 
 export { getWallet, getWeb3 };
