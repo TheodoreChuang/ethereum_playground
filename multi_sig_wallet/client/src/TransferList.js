@@ -1,4 +1,4 @@
-const TransferList = ({ transfers, approveTransfer }) => (
+const TransferList = ({ transfers, approved, approveTransfer }) => (
   <div>
     <h2>Transfers</h2>
     <table>
@@ -12,14 +12,19 @@ const TransferList = ({ transfers, approveTransfer }) => (
         </tr>
       </thead>
       <tbody>
-        {transfers.map((txn) => (
+        {transfers.map((txn, i) => (
           <tr key={txn.id}>
             <td>{txn.id}</td>
             <td>{txn.amount}</td>
             <td>{txn.to}</td>
             <td>
               {txn.approvals}
-              <button onClick={() => approveTransfer(txn.id)}>Approve</button>
+              <button
+                disabled={approved[i]}
+                onClick={() => approveTransfer(txn.id)}
+              >
+                {approved[i] ? "Approved" : "Approve?"}
+              </button>
             </td>
             <td>{txn.sent ? "Yes" : "No"}</td>
           </tr>

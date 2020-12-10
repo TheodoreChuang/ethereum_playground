@@ -5,6 +5,7 @@ const NewTransfer = ({ createTransfer }) => {
 
   const submit = (e) => {
     e.preventDefault();
+    setTransfer({});
     createTransfer(transfer);
   };
 
