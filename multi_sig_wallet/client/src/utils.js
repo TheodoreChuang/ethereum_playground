@@ -7,6 +7,7 @@ import Wallet from "./contracts/MultiSigWallet.json";
 const getWallet = async (web3) => {
   const networkId = await web3.eth.net.getId();
   const contractDeployment = Wallet.networks[networkId];
+  console.log("contractDeployment", contractDeployment);
   return new web3.eth.Contract(Wallet.abi, contractDeployment?.address);
 };
 
