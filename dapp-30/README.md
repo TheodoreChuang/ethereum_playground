@@ -17,4 +17,8 @@ Day 1 - Simple Smart Contract
 
 - skeleton set up and configurations
 
-Day 2 -
+Day 2 - Hello World
+
+- simple pure function
+
+Day 3 -
