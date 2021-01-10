@@ -21,4 +21,6 @@ Day 2 - Hello World
 
 - simple pure function
 
-Day 3 -
+Day 3 - Simple Storage
+
+- update of a state variable
