@@ -11,6 +11,17 @@ npm i -g truffle
 npm i -g static-server
 ```
 
+Dev:
+
+```bash
+$backend truffle develop
+$truffle migrate --reset
+```
+
+```bash
+$frontend npm start
+```
+
 ## DApps
 
 Day 1 - Simple Smart Contract
