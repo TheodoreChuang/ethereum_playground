@@ -35,3 +35,24 @@ Day 2 - Hello World
 Day 3 - Simple Storage
 
 - update of a state variable
+
+Day 4 - Advanced Storage
+
+- intro to array data type
+
+Day 5 - Crud
+
+- intro to struct data type
+- basic data structure combining arrays and structs
+
+Day 6 - EtherWallet
+
+- basic wallet: deposit, balance, transfer
+
+Day 7 - SplitPayment
+
+- batch transfers among n number of addresses
+
+Day 8 - Trust
+
+- time lock transfer
