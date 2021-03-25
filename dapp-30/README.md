@@ -56,3 +56,7 @@ Day 7 - SplitPayment
 Day 8 - Trust
 
 - time lock transfer
+
+Day 9 - Trust Mutli
+
+- time lock transfers
