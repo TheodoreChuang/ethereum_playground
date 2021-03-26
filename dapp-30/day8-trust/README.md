@@ -1,6 +1,6 @@
 # Trust
 
-Trustor deploys the Trust contract with ore-determined parameters.
+Trustor deploys the Trust contract with pre-determined parameters.
 
 - asset / value (ETH)
 - time-lock duration (seconds)
