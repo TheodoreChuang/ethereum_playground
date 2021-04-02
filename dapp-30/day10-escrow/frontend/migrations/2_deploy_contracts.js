@@ -1,11 +1,11 @@
 var Escrow = artifacts.require("./Escrow.sol");
 
-module.exports = function(deployer, _network, accounts) {
+module.exports = function (deployer, _network, accounts) {
   deployer.deploy(
-    Escrow, 
+    Escrow,
     accounts[1], //payer
-    accounts[2], //payee 
-    1000,
-    {from: accounts[0]}
+    accounts[2], //payee
+    1000000000000000,
+    { from: accounts[0] }
   );
 };

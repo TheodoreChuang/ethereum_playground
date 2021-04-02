@@ -1,34 +1,36 @@
-pragma solidity ^0.5.2;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
-contract Escrow{
-  address public payer;
-  address payable public payee;
-  address public lawyer;
-  uint public amount;
-  
-  constructor(
-    address _payer, 
-    address payable _payee, 
-    uint _amount) 
-    public {
-    payer = _payer;
-    payee = _payee;
-    lawyer = msg.sender; 
-    amount = _amount;
-  }
+contract Escrow {
+    address public payer;
+    address payable public payee;
+    address public lawyer;
+    uint256 public amount;
 
-  function deposit() payable public {
-    require(msg.sender == payer, 'Sender must be the payer');
-    require(address(this).balance <= amount, 'Cant send more than escrow amount');
-  }
+    constructor(
+        address _payer,
+        address payable _payee,
+        uint256 _amount
+    ) {
+        payer = _payer;
+        payee = _payee;
+        amount = _amount;
+        lawyer = msg.sender;
+    }
 
-  function release() public {
-    require(address(this).balance == amount, 'cannot release funds before full amount is sent');
-    require(msg.sender == lawyer, 'only lawyer can release funds');
-    payee.transfer(amount);
-  }
-  
-  function balanceOf() view public returns(uint) {
-    return address(this).balance;
-  }
+    function deposit() public payable {
+        require(msg.sender == payer, "Only the payer can deposit funds");
+        require(address(this).balance <= amount, "Total value exceeds amount");
+    }
+
+    function release() public {
+        require(msg.sender == lawyer, "Only lawyer can release funds");
+        require(address(this).balance == amount, "Not fully funded yet");
+
+        payee.transfer(amount);
+    }
+
+    function balanceOf() public view returns (uint256) {
+        return address(this).balance;
+    }
 }
