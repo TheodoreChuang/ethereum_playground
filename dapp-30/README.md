@@ -65,6 +65,10 @@ Day 10 - Escrow
 
 - transferring Wei
 
+Day 11 - String Manipulation
+
+- concatenate two strings
+
 ## References
 
 - https://ethereum.org/en/developers/docs/
