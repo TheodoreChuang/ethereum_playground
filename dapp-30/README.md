@@ -69,6 +69,10 @@ Day 11 - String Manipulation
 
 - concatenate two strings
 
+Day 12 - Fibonacci
+
+- numbers
+
 ## References
 
 - https://ethereum.org/en/developers/docs/
