@@ -73,6 +73,10 @@ Day 12 - Fibonacci
 
 - numbers
 
+Day 13 - Multisig Wallet
+
+- basic multi-sig wallet
+
 ## References
 
 - https://ethereum.org/en/developers/docs/
