@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import Multisig from './contracts/Multisig.json';
-import { getWeb3 } from './utils.js';
+import React, { useEffect, useState } from "react";
+import Multisig from "./contracts/Multisig.json";
+import { getWeb3 } from "./utils.js";
 
 function App() {
   const [web3, setWeb3] = useState(undefined);
   const [accounts, setAccounts] = useState(undefined);
   const [contract, setContract] = useState(undefined);
+  const [balance, setBalance] = useState(undefined);
+  const [currentTransfer, setCurrentTransfer] = useState(undefined);
+  const [quorum, setQuorum] = useState(undefined);
 
   useEffect(() => {
     const init = async () => {
@@ -13,17 +16,58 @@ function App() {
       const accounts = await web3.eth.getAccounts();
       const networkId = await web3.eth.net.getId();
       const deployedNetwork = Multisig.networks[networkId];
-      const contract = new web3.eth.Contract(
-        Multisig.abi,
-        deployedNetwork && deployedNetwork.address,
-      );
+      const contract = new web3.eth.Contract(Multisig.abi, deployedNetwork?.address);
+      const quorum = await contract.methods.quorum().call();
 
       setWeb3(web3);
       setAccounts(accounts);
       setContract(contract);
-    }
+      setQuorum(quorum);
+    };
     init();
+
+    // Handle event from MetaMask when account is switched
+    window.ethereum.on("accountsChanged", accounts => {
+      setAccounts(accounts);
+    });
   }, []);
+
+  useEffect(() => {
+    if (contract && web3) {
+      updateBalance();
+      updateCurrentTransfer();
+    }
+  }, [accounts, contract, web3]);
+
+  const updateBalance = async () => {
+    const balance = await web3.eth.getBalance(contract.options.address);
+    setBalance(balance);
+  };
+
+  const updateCurrentTransfer = async () => {
+    const currentTransferId = (await contract.methods.nextId().call()) - 1;
+    if (currentTransferId >= 0) {
+      const currentTransfer = await contract.methods.transfers(currentTransferId).call();
+      const isApproved = await contract.methods.approvals(accounts[0], currentTransferId).call();
+      setCurrentTransfer({ ...currentTransfer, isApproved });
+    }
+  };
+
+  const createTransfer = async e => {
+    e.preventDefault();
+    const amount = e.target.elements[0].value;
+    const to = e.target.elements[1].value;
+    await contract.methods.createTransfer(amount, to).send({ from: accounts[0] });
+
+    await updateCurrentTransfer();
+  };
+
+  const sendTransfer = async () => {
+    await contract.methods.sendTransfer(currentTransfer.id).send({ from: accounts[0] });
+
+    await updateBalance();
+    await updateCurrentTransfer();
+  };
 
   if (!web3) {
     return <div>Loading...</div>;
@@ -35,14 +79,17 @@ function App() {
 
       <div className="row">
         <div className="col-sm-12">
-           <p>Balance: <b></b> wei </p>
+          <p>
+            Balance: <b>{balance}</b> wei{" "}
+          </p>
         </div>
       </div>
 
+      {!currentTransfer || currentTransfer.approvals >= quorum ? (
         <div className="row">
           <div className="col-sm-12">
             <h2>Create transfer</h2>
-            <form>
+            <form onSubmit={createTransfer}>
               <div className="form-group">
                 <label htmlFor="amount">Amount</label>
                 <input type="number" className="form-control" id="amount" />
@@ -51,25 +98,32 @@ function App() {
                 <label htmlFor="to">To</label>
                 <input type="text" className="form-control" id="to" />
               </div>
-              <button type="submit" className="btn btn-primary">Submit</button>
+              <button type="submit" className="btn btn-primary">
+                Submit
+              </button>
             </form>
           </div>
         </div>
-
+      ) : (
         <div className="row">
           <div className="col-sm-12">
-            <h2>Approve transfer</h2>
+            <h2>Approve transfer?</h2>
             <ul>
-              <li>TransferId:</li>
-              <li>Amount:</li>
-              <li>Approvals:</li>
+              <li>TransferId: {currentTransfer.id}</li>
+              <li>Amount: {currentTransfer.amount}</li>
+              <li>Approvals: {currentTransfer.approvals}</li>
             </ul>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="btn btn-primary"
-            >Submit</button>
+              disabled={currentTransfer.isApproved}
+              onClick={sendTransfer}
+            >
+              {currentTransfer.isApproved ? "Already approved" : "Approve"}
+            </button>
           </div>
         </div>
+      )}
     </div>
   );
 }
