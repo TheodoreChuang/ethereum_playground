@@ -77,6 +77,10 @@ Day 13 - Multisig Wallet
 
 - basic multi-sig wallet
 
+Day 14 - Voting
+
+- bit of everything (dynamic array, structs, loops, modifier, mocking time in tests)
+
 ## References
 
 - https://ethereum.org/en/developers/docs/
