@@ -20,7 +20,7 @@ contract Voting {
         Choice[] choices;
     }
     mapping(uint256 => Ballot) public ballots;
-    uint256 nextBallotId;
+    uint256 public nextBallotId;
 
     address public admin;
 
@@ -48,6 +48,8 @@ contract Voting {
         for (uint256 i = 0; i < choices.length; i++) {
             ballots[nextBallotId].choices.push(Choice(i, choices[i], 0));
         }
+
+        nextBallotId++;
     }
 
     /// @notice Vote for ballot's choice
@@ -68,6 +70,11 @@ contract Voting {
         );
 
         return ballots[ballotId].choices;
+    }
+
+    ///@notice Get a ballot details
+    function getBallot(uint256 ballotId) external view returns (Ballot memory) {
+        return ballots[ballotId];
     }
 
     modifier onlyAdmin() {

@@ -24,10 +24,14 @@ contract("Voting", accounts => {
 
   describe("createBallot()", () => {
     it("should create a new ballot", async () => {
+      const initialBallotId = await voting.nextBallotId();
+
       await voting.createBallot("B0", ["C1", "C2", "C3"], 5, { from: admin });
 
       const ballot = await voting.ballots(0);
+      const nextBallotId = await voting.nextBallotId();
       assert(ballot.name === "B0");
+      assert(initialBallotId.toNumber() + 1 === nextBallotId.toNumber());
       // assert(ballot.choices.map(c => c.name) === ["C1", "C2", "C3"]);
     });
     it("should not create a new ballot if not admin", async () => {
