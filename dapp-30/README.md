@@ -81,6 +81,10 @@ Day 14 - Voting
 
 - bit of everything (dynamic array, structs, loops, modifier, mocking time in tests)
 
+Day 15 - The DAO
+
+- TODO
+
 ## References
 
 - https://ethereum.org/en/developers/docs/
