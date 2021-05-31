@@ -83,7 +83,7 @@ Day 14 - Voting
 
 Day 15 - The DAO
 
-- TODO
+- time, receive() and fallback()
 
 ## References
 
