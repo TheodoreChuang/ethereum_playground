@@ -13,9 +13,9 @@ pragma solidity ^0.8.0;
 contract DAO {
     uint256 public totalShares;
     uint256 public availableFunds;
-    uint256 public contributionEnd;
+    uint256 public contributionEnd; // (seconds)
     uint256 public nextProposalId;
-    uint256 public voteTime; // voting period duration
+    uint256 public voteTime; // (seconds) voting period duration
     uint256 public quorum; // minimum required votes as percent of total (ex. 50 = 50%)
     address public admin;
 
@@ -34,7 +34,7 @@ contract DAO {
         uint256 amount;
         address payable recipient;
         uint256 votes; // number of shares in favor of
-        uint256 end; // expiry (time stamp)
+        uint256 end; // (time stamp) expiry
         bool executed;
     }
 
@@ -161,7 +161,7 @@ contract DAO {
     }
 
     modifier onlyInvestors() {
-        require(investors[msg.sender] = true, "Only investors");
+        require(investors[msg.sender] == true, "Only investors");
         _;
     }
 }
