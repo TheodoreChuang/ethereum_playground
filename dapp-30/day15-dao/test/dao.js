@@ -210,7 +210,12 @@ contract("DAO", accounts => {
     });
 
     it("should withdraw ether if admin", async () => {
+      const balanceBefore = web3.utils.toBN(await web3.eth.getBalance(accounts[6]));
+
       await dao.withdrawEth(accounts[6], 100, { from: admin });
+
+      const balanceAfter = web3.utils.toBN(await web3.eth.getBalance(accounts[6]));
+      expect(balanceAfter.sub(balanceBefore).toNumber()).to.equal(100);
     });
 
     it("should NOT withdraw ether if not admin", async () => {
