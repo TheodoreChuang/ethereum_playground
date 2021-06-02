@@ -83,7 +83,7 @@ Day 14 - Voting
 
 Day 15 - The DAO
 
-- time, receive() and fallback()
+- time, floating point division, receive() and fallback()
 
 ## References
 

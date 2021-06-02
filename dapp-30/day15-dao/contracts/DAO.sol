@@ -72,6 +72,7 @@ contract DAO {
         require(availableFunds >= amount, "DAO does not enough funds");
 
         shares[msg.sender] -= amount;
+        totalShares -= amount;
         availableFunds -= amount;
         payable(msg.sender).transfer(amount);
     }
@@ -115,12 +116,13 @@ contract DAO {
             proposal.executed == false,
             "Proposal has already been executed"
         );
-        // TODO what if voting over and quorum not met? Need to release funds?
+        // FIXME what if voting over and quorum not met? Need to release funds?
         require(
-            ((proposal.votes / totalShares) * 100) >= quorum,
+            ((proposal.votes * 100) / totalShares) >= quorum,
             "Quorum not met"
         );
 
+        proposal.executed = true;
         _transferEth(proposal.recipient, proposal.amount);
     }
 
