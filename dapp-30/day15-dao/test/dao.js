@@ -14,6 +14,9 @@ contract("DAO", accounts => {
     it("should set quorum to provided percentage", async () => {
       expect((await dao.quorum()).toNumber()).to.equal(70);
     });
+    it("should set contract admin to the account who deployed the contract", async () => {
+      expect(await dao.admin()).to.equal(admin);
+    });
   });
 
   describe("contribution()", () => {
@@ -145,38 +148,31 @@ contract("DAO", accounts => {
     });
   });
 
-  describe("redeemShare()", () => {
+  describe("redeemShares()", () => {
     beforeEach(async () => {
       await dao.contribute({ from: investor1, value: 50 });
     });
 
     it("should be able to redeem shares back to original Wei amount", async () => {
-      // const balanceBefore = web3.utils.toBN(await web3.eth.getBalance(investor1));
-      // console.log("🚀 ~ file: dao.js ~ line 155 ~ it ~ balanceBefore", balanceBefore.toString());
-
-      await dao.redeemShare(20, { from: investor1 });
+      await dao.redeemShares(20, { from: investor1 });
 
       expect((await dao.shares(investor1)).toNumber()).to.equal(30);
       expect((await dao.totalShares()).toNumber()).to.equal(30);
       expect((await dao.availableFunds()).toNumber()).to.equal(30);
-      // const balanceAfter = web3.utils.toBN(await web3.eth.getBalance(investor1));
-      // console.log("🚀 ~ file: dao.js ~ line 155 ~ it ~ balanceAfter", balanceAfter.toString());
-      // expect(balanceAfter.sub(balanceBefore).toNumber()).to.equal(20);
-      // expect(balanceAfter.gt(balanceBefore)).to.equal(true);
     });
 
     it("should NOT be able to redeem more than their own shares", async () => {
-      await expectRevert(dao.redeemShare(1, { from: admin }), "You do not have enough shares");
+      await expectRevert(dao.redeemShares(1, { from: admin }), "You do not have enough shares");
     });
 
     it("should NOT be able to redeem if DAO has insufficient funds", async () => {
       await dao.createProposal("R-P1", 40, accounts[5], { from: investor1 });
 
-      await expectRevert(dao.redeemShare(11, { from: investor1 }), "DAO does not enough funds");
+      await expectRevert(dao.redeemShares(11, { from: investor1 }), "DAO does not enough funds");
     });
   });
 
-  describe("transferShare()", () => {
+  describe("transferShares()", () => {
     const newInvestor = accounts[9];
 
     beforeEach(async () => {
@@ -192,7 +188,7 @@ contract("DAO", accounts => {
       expect((await dao.shares(newInvestor)).toNumber()).to.equal(0);
       expect(await dao.investors(newInvestor)).to.equal(false);
 
-      await dao.transferShare(15, newInvestor, { from: investor1 });
+      await dao.transferShares(15, newInvestor, { from: investor1 });
 
       expect((await dao.shares(newInvestor)).toNumber()).to.equal(15);
       expect((await dao.shares(investor1)).toNumber()).to.equal(35);
@@ -200,7 +196,7 @@ contract("DAO", accounts => {
     });
 
     it("should NOT be able to transfer more than their own shares", async () => {
-      await expectRevert(dao.transferShare(1, newInvestor, { from: admin }), "You do not have enough shares");
+      await expectRevert(dao.transferShares(1, newInvestor, { from: admin }), "You do not have enough shares");
     });
   });
 

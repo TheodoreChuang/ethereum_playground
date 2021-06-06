@@ -67,7 +67,7 @@ contract DAO {
     }
 
     /// @notice Investor to redeem shares from DAO (convert their shares back to ETH)
-    function redeemShare(uint256 amount) external {
+    function redeemShares(uint256 amount) external {
         require(shares[msg.sender] >= amount, "You do not have enough shares");
         require(availableFunds >= amount, "DAO does not enough funds");
 
@@ -78,7 +78,7 @@ contract DAO {
     }
 
     /// @notice Investor to transfer shares with another address
-    function transferShare(uint256 amount, address to) external {
+    function transferShares(uint256 amount, address to) external {
         require(shares[msg.sender] >= amount, "You do not have enough shares");
 
         shares[msg.sender] -= amount;
