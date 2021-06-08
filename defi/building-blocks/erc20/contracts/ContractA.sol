@@ -20,10 +20,11 @@ contract ContractA {
         contractB = ContractB(_contractB);
     }
 
-    ///@notice Deposit token from sender to ContractB. First requires senders approval from token.
+    ///@notice Deposit token from sender to ContractB. First requires sender's approval from token.
     function deposit(uint256 amount) external {
         /// sender to this contract
         token.transferFrom(msg.sender, address(this), amount);
+
         /// this contract to contractB
         token.approve(address(contractB), amount);
         contractB.deposit(amount);
@@ -33,6 +34,7 @@ contract ContractA {
     function withdraw(uint256 amount) external {
         /// contractB to this contract
         contractB.withdraw(amount);
+
         /// this contract to sender
         token.transfer(msg.sender, amount);
     }
