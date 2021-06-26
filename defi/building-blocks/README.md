@@ -16,3 +16,10 @@
   - Why? Compatibility with ERC-20 in order to faciliate trading
   - https://weth.io/
   - https://etherscan.io/address/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2
+- Collateral Backed Tokens
+  - Examples: wETH, liquidity provider tokens (wrapped ERC-20)
+- Oracles
+  - Why? Incorporate external data from outside of the blockchain (ex. prices)
+  - Two design patterns: pull based or push based
+    - pull based: consumer pulls data from oracle
+    - push based: consumer registers a callback and oracle calls callback with data
