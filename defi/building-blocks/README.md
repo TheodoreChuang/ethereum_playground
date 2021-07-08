@@ -23,3 +23,17 @@
   - Two design patterns: pull based or push based
     - pull based: consumer pulls data from oracle
     - push based: consumer registers a callback and oracle calls callback with data
+- Stablecoins
+  - Uses cases: quote currency, collateral, payment
+  - Types: fiat-based (USDC), crypto-based (DAI), algorithmic (Ampleforth)
+  - Links:
+    - https://stablecoinindex.com/
+    - https://www.coingecko.com/en/stablecoins
+    - https://defiprime.com/stablecoins
+- AMM + DEX
+  - Example: Uniswap - based on 'constant product formula' instead on an order book
+    - Liquidity providers should be mindful of impairment loss
+    - Traders should be mindful of slippage
+- Liquidity Mining
+  - Reward investors for providing liquid (depositing some asset) into a pool by providing them some governance token
+  - https://medium.com/bollinger-investment-group/liquidity-mining-a-user-centric-token-distribution-strategy-1d05c5174641

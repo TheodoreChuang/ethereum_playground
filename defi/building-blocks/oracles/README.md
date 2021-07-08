@@ -4,6 +4,8 @@ Incorporating external information within Ethereum.
 
 This project is an example of a pull based oracle. See /docs for example flow.
 
+The `admin` deploys the Oracle contract and can manage `reporters`. Approved `reporters` can push data into the Oracle contract. Any consumer can pull data from the Oracle contract.
+
 (1) Set up Ethereum network
 
 ```bash

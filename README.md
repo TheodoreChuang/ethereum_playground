@@ -83,6 +83,15 @@ Infura or host own node
 
 ## Articles:
 
+#### Ethereum basics
+
 Intro - https://blog.b9lab.com/unpacking-the-ethereum-stack-for-developers-c1be1dc41c06
+
+#### Data structures
+
 Basic CRUD - https://medium.com/robhitchens/solidity-crud-part-1-824ffa69509a
 Simply State Machine - https://medium.com/coinmonks/state-machines-in-solidity-9e2d8a6d7a11
+
+#### Forking mainnet and other public networks:
+
+Compound Example - https://medium.com/compound-finance/supplying-assets-to-the-compound-protocol-ec2cf5df5aa
