@@ -95,3 +95,11 @@ Simply State Machine - https://medium.com/coinmonks/state-machines-in-solidity-9
 #### Forking mainnet and other public networks:
 
 Compound Example - https://medium.com/compound-finance/supplying-assets-to-the-compound-protocol-ec2cf5df5aa
+
+#### Upgrading Smart Contracts:
+
+https://github.com/jklepatch/eattheblocks/tree/master/screencast/372-smart-contract-upgrade
+
+- Proxy Pattern: minimal proxy contract has a `fallback()`, contract requires assembly, memory of versions dependent on each other
+- Adapter Pattern: main contract contains state and the functions but calls another contract for certain implementation logic. Implementation can be upgraded over time (ex. Yearn strategies).
+- Migrator: New version is deployed with a migrator contract. Addresses can call the migrator contract to transfer state from older version to new version. This is a common pattern for tokens.
