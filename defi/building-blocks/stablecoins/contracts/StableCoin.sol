@@ -58,11 +58,11 @@ contract StableCoin is ERC20 {
 
     /// @notice Deposit ETH collateral to mint stablecoins
     function borrowPosition(uint256 amount) external payable {
-        uint256 etherPrice = oracle.getEtherPrice();
         require(amount >= 10**decimals(), "amount below minimum");
+
+        uint256 etherPrice = oracle.getEtherPrice();
         require(
-            (msg.value * etherPrice) / 10**decimals() >=
-                amount * collateralFactor,
+            msg.value * etherPrice >= amount * collateralFactor,
             "insufficient collateral"
         );
 
@@ -73,19 +73,31 @@ contract StableCoin is ERC20 {
     }
 
     /// @notice Return stablecoins to redeem ETH collateral
+    /// Total position must be above required LTV
     function redeemPosition(uint256 amount) external payable {
-        // uint256 etherPrice = oracle.getEtherPrice();
-        require(amount >= 10**decimals(), "amount below minimum");
-        // require(
-        //     msg.value * 100 >= etherPrice * amount * collateralFactor,
-        //     "insufficient collateral"
-        // );
+        require(
+            amount <= positions[msg.sender].token,
+            "amount above total position"
+        );
 
-        positions[msg.sender].collateral -= msg.value; // += ??
-        positions[msg.sender].token -= amount; // += ??
+        uint256 etherPrice = oracle.getEtherPrice();
+        // allow for 0.5% buffer in price to account for rounding in collateralChange
+        require(
+            positions[msg.sender].collateral * ((etherPrice * 1005) / 1000) >=
+                positions[msg.sender].token * collateralFactor,
+            "insufficient collateral"
+        );
+
+        // TODO handle dust/remainder amounts
+        uint256 tokenRedeemRation = positions[msg.sender].token / amount;
+        uint256 collateralChange = positions[msg.sender].collateral /
+            tokenRedeemRation;
+
+        positions[msg.sender].collateral -= collateralChange;
+        positions[msg.sender].token -= amount;
 
         _burn(msg.sender, amount);
-        // ? payable(msg.sender).transfer(position.collateral);
+        payable(msg.sender).transfer(collateralChange);
     }
 
     /// @notice
