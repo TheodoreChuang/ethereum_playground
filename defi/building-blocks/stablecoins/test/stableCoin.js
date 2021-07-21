@@ -16,7 +16,7 @@ const ethUSD330_2512 = new BN(3302512).mul(decimalsBN.div(new BN(10000)));
 const ethUSD669_7488 = ethUSD1000.sub(ethUSD330_2512);
 
 contract("StableCoin", accounts => {
-  const [lp1, lp2] = accounts;
+  const [lp1, lp2, liquidator] = accounts;
 
   let mockOracle;
   let stableCoin;
@@ -137,7 +137,7 @@ contract("StableCoin", accounts => {
           "amount above total position"
         );
       });
-      it("overall LTV less than required (after price buffer)", async () => {
+      it("overall LTV greater than threshold (after price buffer)", async () => {
         await stableCoin.borrowPosition(ethUSD1000, {
           from: lp1,
           value: web3.utils.toWei("1"), // $ 2000
@@ -165,6 +165,7 @@ contract("StableCoin", accounts => {
         expect(iPosition.collateral.toString()).to.equal("1000000000000000000");
         expect(iPosition.token.toString()).to.equal("1000000000000000000000");
       });
+
       it("when partial (50%) redemption", async () => {
         const ethBefore = web3.utils.toBN(await web3.eth.getBalance(lp1));
 
@@ -230,7 +231,45 @@ contract("StableCoin", accounts => {
     });
   });
 
-  //   describe("liquidatePosition()", () => {
-  //     it("", async () => {});
-  //   });
+  describe("liquidatePosition()", () => {
+    beforeEach(async () => {
+      await stableCoin.borrowPosition(ethUSD1000, {
+        from: lp1,
+        value: web3.utils.toWei("1"), // $ 2000
+      });
+
+      const iPosition = await stableCoin.positions(lp1);
+      expect(iPosition.collateral.toString()).to.equal("1000000000000000000");
+      expect(iPosition.token.toString()).to.equal("1000000000000000000000");
+    });
+
+    it("should not allow liquidation if there is sufficient collateral", async () => {
+      await expectRevert(
+        stableCoin.liquidatePosition(lp1, {
+          from: liquidator,
+        }),
+        "not liquidatable"
+      );
+    });
+    it("should allow liquidation any position if greater than threshold LTV", async () => {
+      const ethBefore = web3.utils.toBN(await web3.eth.getBalance(lp1));
+      await mockOracle.updateEtherPrice(1990, {
+        from: liquidator,
+      });
+
+      await stableCoin.liquidatePosition(lp1, {
+        from: liquidator,
+      });
+
+      const fPosition = await stableCoin.positions(lp1);
+      expect(fPosition.collateral.toString()).to.equal("0");
+      expect(fPosition.token.toString()).to.equal("0");
+
+      const ethAfter = web3.utils.toBN(await web3.eth.getBalance(lp1));
+      expect(ethAfter.sub(ethBefore).toString()).to.equal(web3.utils.toWei("1"));
+
+      const total = await stableCoin.totalSupply();
+      expect(total.eq(initialSupplyBN)).to.equal(true);
+    });
+  });
 });

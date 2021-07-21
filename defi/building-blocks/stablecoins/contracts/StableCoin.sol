@@ -88,7 +88,6 @@ contract StableCoin is ERC20 {
             "insufficient collateral"
         );
 
-        // TODO handle dust/remainder amounts
         uint256 tokenRedeemRation = positions[msg.sender].token / amount;
         uint256 collateralChange = positions[msg.sender].collateral /
             tokenRedeemRation;
@@ -100,18 +99,19 @@ contract StableCoin is ERC20 {
         payable(msg.sender).transfer(collateralChange);
     }
 
-    /// @notice
+    /// @notice Allow anyone to immediately liquidate any position above LTV
     function liquidatePosition(address owner) external {
         Position storage position = positions[owner];
         uint256 etherPrice = oracle.getEtherPrice();
+
         require(
-            position.token * collateralFactor <
-                position.collateral * etherPrice,
+            position.collateral * etherPrice <
+                position.token * collateralFactor,
             "not liquidatable"
         );
 
-        _burn(msg.sender, position.token);
-        payable(msg.sender).transfer(position.collateral);
+        _burn(owner, position.token);
+        payable(owner).transfer(position.collateral);
 
         position.token = 0;
         position.collateral = 0;
