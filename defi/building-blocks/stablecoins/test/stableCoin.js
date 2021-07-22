@@ -5,18 +5,20 @@ const StableCoin = artifacts.require("StableCoin");
 
 const BN = web3.utils.BN;
 const decimals = 10 ** 18;
-const decimalsBN = new BN(decimals.toString(10));
+const tokenBN = new BN(decimals.toString(10));
+const tokenBNPlus2Percent = tokenBN.mul(new BN(102)).div(new BN(100));
+const tokenBNMinus2Percent = tokenBN.mul(new BN(98)).div(new BN(100));
 
-const initialTokensBN = new BN(1000000);
-const initialSupplyBN = initialTokensBN.mul(decimalsBN);
+const initialTokensBN = new BN(100000);
+const initialSupplyBN = initialTokensBN.mul(tokenBN);
 
-const ethUSD1000 = new BN(1000).mul(decimalsBN);
-const ethUSD500 = new BN(500).mul(decimalsBN);
-const ethUSD330_2512 = new BN(3302512).mul(decimalsBN.div(new BN(10000)));
+const ethUSD1000 = new BN(1000).mul(tokenBN);
+const ethUSD500 = new BN(500).mul(tokenBN);
+const ethUSD330_2512 = new BN(3302512).mul(tokenBN.div(new BN(10000)));
 const ethUSD669_7488 = ethUSD1000.sub(ethUSD330_2512);
 
 contract("StableCoin", accounts => {
-  const [lp1, lp2, liquidator] = accounts;
+  const [admin, lp1, lp2, liquidator] = accounts;
 
   let mockOracle;
   let stableCoin;
@@ -33,9 +35,6 @@ contract("StableCoin", accounts => {
       expect(price.toString()).to.equal("2000");
     });
     it("should be able to update price", async () => {
-      const iPrice = await mockOracle.getEtherPrice();
-      expect(iPrice.toString()).to.equal("2000");
-
       await mockOracle.updateEtherPrice(1978);
 
       const fPrice = await mockOracle.getEtherPrice();
@@ -44,26 +43,63 @@ contract("StableCoin", accounts => {
   });
 
   describe("deploy initial contract", () => {
-    it("should have the expected name and symbol", async () => {
+    it("should have the expected static config", async () => {
       const name = await stableCoin.name();
       const symbol = await stableCoin.symbol();
-
-      expect(name).to.equal("ETH Backed Token");
-      expect(symbol).to.equal("ethUSD");
-    });
-    it("should have the expected initial and total supply", async () => {
+      const targetPrice = await stableCoin.targetPrice();
       const supply = await stableCoin.initialSupply();
       const total = await stableCoin.totalSupply();
 
+      expect(name).to.equal("ETH Backed Token");
+      expect(symbol).to.equal("ethUSD");
+      expect(targetPrice.eq(tokenBN)).to.equal(true);
       expect(supply.eq(initialSupplyBN)).to.equal(true);
       expect(total.eq(initialSupplyBN)).to.equal(true);
     });
+    it("should have the expected dynamic", async () => {
+      const contractAdmin = await stableCoin.admin();
+
+      expect(contractAdmin).to.equal(admin);
+    });
   });
 
-  // describe("adjustSupply()", () => {
-  //   it("", async () => {
-  //   });
-  // });
+  describe("adjustSupply()", () => {
+    it("should only allow the admin to adjust supply", async () => {
+      await expectRevert(
+        stableCoin.adjustSupply(tokenBN, {
+          from: liquidator,
+        }),
+        "only admin"
+      );
+    });
+    it("should be no change in supply when current price is at target price", async () => {
+      const total = await stableCoin.totalSupply();
+
+      await stableCoin.adjustSupply(tokenBN, {
+        from: admin,
+      });
+
+      expect(total.eq(initialSupplyBN)).to.equal(true);
+    });
+    it("should increase supply when current price is above target price", async () => {
+      await stableCoin.adjustSupply(tokenBNPlus2Percent, {
+        from: admin,
+      });
+
+      const fSupply = await stableCoin.totalSupply();
+      const supplyDiff = new BN(2000).mul(tokenBN);
+      expect(fSupply.eq(initialSupplyBN.add(supplyDiff))).to.equal(true);
+    });
+    it("should decrease supply when current price is below target price", async () => {
+      await stableCoin.adjustSupply(tokenBNMinus2Percent, {
+        from: admin,
+      });
+
+      const fSupply = await stableCoin.totalSupply();
+      const supplyDiff = new BN(2000).mul(tokenBN);
+      expect(fSupply.eq(initialSupplyBN.sub(supplyDiff))).to.equal(true);
+    });
+  });
 
   describe("borrowPosition()", () => {
     beforeEach(async () => {
@@ -75,7 +111,7 @@ contract("StableCoin", accounts => {
     describe("should not allow borrow when", () => {
       it("amount is less than one token", async () => {
         await expectRevert(
-          stableCoin.borrowPosition(decimalsBN.sub(new BN(1)), {
+          stableCoin.borrowPosition(tokenBN.sub(new BN(1)), {
             from: lp1,
             value: web3.utils.toWei("1", "ether"),
           }),
@@ -224,6 +260,7 @@ contract("StableCoin", accounts => {
         expect(ethAfter.gt(ethBefore)).to.equal(true);
         // slightly less than initial 1 ETH due to gas costs
         expect(ethAfter.sub(ethBefore).toString().length).to.equal(18);
+        expect(ethAfter.sub(ethBefore).toString().substring(0, 4)).to.equal("9998");
 
         const total = await stableCoin.totalSupply();
         expect(total.eq(initialSupplyBN)).to.equal(true);

@@ -4,9 +4,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./IMockOracle.sol";
 
-// does having an arbitrary initial supply make sense?
-// treasury ?? what for? adjust supply some how?
-
 /**
  * @title StableCoin
  * @notice a simple implementation of a crypto-backed stablecoin
@@ -15,42 +12,47 @@ import "./IMockOracle.sol";
  */
 contract StableCoin is ERC20 {
     IMockOracle public oracle;
+    address public admin;
+
+    uint256 public collateralFactor = 2; // 50% LTV
     uint256 public targetPrice = 10**decimals(); // 1 token = 10 ** 18 = 1 USD
-    uint256 public initialSupply = 1000000 * (10**decimals()); // 100,000 tokens
-    // uint256 public treasury = 10000; // 10,000 tokens
+    uint256 public initialSupply = 100000 * (10**decimals()); // 100,000 tokens
 
     struct Position {
         uint256 collateral;
         uint256 token;
     }
     mapping(address => Position) public positions;
-    uint256 public collateralFactor = 2; // 50% LTV
 
     constructor(address _oracle) ERC20("ETH Backed Token", "ethUSD") {
         oracle = IMockOracle(_oracle);
-        _mint(msg.sender, initialSupply);
-    }
+        admin = msg.sender;
 
-    /// @notice test oracle
-    // function testOracle() external view returns (uint256) {
-    //     return oracle.getEtherPrice();
-    // }
+        _mint(address(this), initialSupply);
+    }
 
     /// @notice Attempt to maintain price stability by adjusting supply
     function adjustSupply(uint256 price) external {
-        // require(msg.sender == oracle, "only oracle"); // TODO <-- is this right?? extend Oracle contracts or triggered by admin?
+        require(msg.sender == admin, "only admin");
 
-        uint256 currentPrice = oracle.getEtherPrice(); // should this be price of collateral or stablecoin?
         if (price > targetPrice) {
-            // (totalSupply + toMint) * targetPrice = totalSupply * currentPrice
-            uint256 toMint = (totalSupply() * currentPrice) /
+            // (totalSupply + toMint) * targetPrice = totalSupply * price
+            // (10000 + X) * 1 = 100000 * 1.02
+            // x = 100000 * 1.02 - 100000
+            // x => 2000 (2%)
+
+            uint256 toMint = (totalSupply() * price) /
                 targetPrice -
                 totalSupply();
             _mint(address(this), toMint);
         } else {
-            // (totalSupply - toBurn) * targetPrice = totalSupply * currentPrice
+            // (totalSupply - toBurn) * targetPrice = totalSupply * price
+            // (100000 - X) * 1 = 100000 * .98
+            // x = -(100000 * .98 - 100000)
+            // x => 2000 (2%)
+
             uint256 toBurn = totalSupply() -
-                (totalSupply() * currentPrice) /
+                (totalSupply() * price) /
                 targetPrice;
             _burn(address(this), toBurn);
         }
