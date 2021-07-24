@@ -81,6 +81,11 @@ Infura or host own node
     - String are stored as an array of chars ∴ an Array of Strings
     - experimental feature: pragma experimental ABIEncoderV2;
 
+## Security:
+
+- https://consensys.github.io/smart-contract-best-practices/
+- https://arxiv.org/pdf/1806.01143.pdf
+
 ## Articles:
 
 #### Ethereum basics

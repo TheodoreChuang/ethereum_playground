@@ -98,7 +98,8 @@ contract StableCoin is ERC20 {
         positions[msg.sender].token -= amount;
 
         _burn(msg.sender, amount);
-        payable(msg.sender).transfer(collateralChange);
+        (bool success, ) = msg.sender.call{value: collateralChange}("");
+        require(success, "collateral transfer failed");
     }
 
     /// @notice Allow anyone to immediately liquidate any position above LTV
@@ -112,10 +113,13 @@ contract StableCoin is ERC20 {
             "not liquidatable"
         );
 
-        _burn(owner, position.token);
-        payable(owner).transfer(position.collateral);
-
-        position.token = 0;
+        uint256 iCollateral = position.collateral;
+        uint256 iToken = position.token;
         position.collateral = 0;
+        position.token = 0;
+
+        _burn(owner, iToken);
+        (bool success, ) = payable(owner).call{value: iCollateral}("");
+        require(success, "collateral transfer failed");
     }
 }
