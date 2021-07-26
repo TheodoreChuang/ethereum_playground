@@ -4,7 +4,9 @@
 
 [![](https://mermaid.ink/img/eyJjb2RlIjoiZ3JhcGggVERcbkFbU291cmNlIENvZGUgKi5zb2xdIFxuLS0-IEIoU29saWRpdHkgQ29tcGlsZXIpXG5CIC0tPiBDW0FCSV1cbkIgLS0-IERbQnl0ZWNvZGVdXG5DIC0tPiBFW1dlYjNdXG5EIC0tPnxEZXBsb3l8IEZbQ29udHJhY3QgSW5zdGFuY2Ugb24gbmV0d29yay9sb2NhbF1cbkUgLS0-IEZcbiIsIm1lcm1haWQiOnsidGhlbWUiOiJkZWZhdWx0In0sInVwZGF0ZUVkaXRvciI6ZmFsc2V9)](https://mermaid-js.github.io/mermaid-live-editor/#/edit/eyJjb2RlIjoiZ3JhcGggVERcbkFbU291cmNlIENvZGUgKi5zb2xdIFxuLS0-IEIoU29saWRpdHkgQ29tcGlsZXIpXG5CIC0tPiBDW0FCSV1cbkIgLS0-IERbQnl0ZWNvZGVdXG5DIC0tPiBFW1dlYjNdXG5EIC0tPnxEZXBsb3l8IEZbQ29udHJhY3QgSW5zdGFuY2Ugb24gbmV0d29yay9sb2NhbF1cbkUgLS0-IEZcbiIsIm1lcm1haWQiOnsidGhlbWUiOiJkZWZhdWx0In0sInVwZGF0ZUVkaXRvciI6ZmFsc2V9)
 
-### Development Workflow with Truffle
+### Development Workflow (Truffle, Hardhat)
+
+#### with Truffle
 
 Truffle is a CLI tool. The workflow is like this:
 
@@ -14,7 +16,14 @@ Deploy your smart contract with `truffle migrate --reset` (the reset flag is nec
 Run smart contract test with `truffle test` (includes web3 and BN.js)
 Deploy your frontend
 
-### How to use Infura?
+#### Hardhat
+
+- https://hardhat.org/getting-started/
+- https://hardhat.org/tutorial/testing-contracts.html
+
+### Nodes (Infura, Alchemy)
+
+#### How to use Infura?
 
 To deploy a smart contract to Infura you need to:
 
@@ -23,6 +32,10 @@ Fund the deployment address (using a faucet in the case of testnet)
 Add a configuration for this deployment in the configuration file of your Truffle project
 Run the deployment with Truffle (ex: `truffle migrate --reset --network ropsten`)
 We will see this in details later in this course in the section on smart contract deployment.
+
+#### Alchemy
+
+Free tier includes archival nodes
 
 ### Custom Scaffold
 
