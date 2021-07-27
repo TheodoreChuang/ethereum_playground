@@ -1,8 +1,6 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.4;
 
-import "hardhat/console.sol";
-
 import "./UnderlyingToken.sol";
 import "./GovernanceToken.sol";
 import "./LpToken.sol";
@@ -30,26 +28,32 @@ contract LiquidityPool is LpToken {
 
     /// @notice LP can temporarily lock up the underlying crypto asset to mine governance tokens
     function deposit(uint256 amount) external {
-        // update checkpoints if first time
-        // _distributeReward()
-        // underlyingToken.transferFrom
-        // _mint()
+        if (checkpoints[msg.sender] == 0) {
+            checkpoints[msg.sender] = block.number;
+        }
+        _distributeReward(msg.sender);
+        underlyingToken.transferFrom(msg.sender, address(this), amount);
+        _mint(msg.sender, amount);
     }
 
     /// @notice LP can withdraw their crypto asset at any time
     function withdraw(uint256 amount) external {
-        // check sender's balance of LP token >= amount
-        // _distributeReward()
-        // underlyingToken.transfer
-        // _burn()
+        require(balanceOf(msg.sender) >= amount, "not enough LP tokens");
+        _distributeReward(msg.sender);
+        underlyingToken.transfer(msg.sender, amount);
+        _burn(msg.sender, amount);
     }
 
     /// @notice Helper fn to calculate, track and mint governance tokens
     function _distributeReward(address beneficiary) internal {
-        // if current block.number > checkpoints {
-        //     calculate rewardAmount
-        //     governanceToken.mint()
-        //     checkpoints[beneficiary] = block.number
-        // }
+        uint256 checkpoint = checkpoints[msg.sender];
+        if (block.number > checkpoint) {
+            checkpoints[beneficiary] = block.number;
+
+            uint256 rewardAmount = (block.number - checkpoint) *
+                REWARD_RATE *
+                balanceOf(beneficiary);
+            governanceToken.mint(beneficiary, rewardAmount);
+        }
     }
 }
