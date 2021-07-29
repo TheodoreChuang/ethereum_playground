@@ -1,5 +1,12 @@
 # DeFi Development
 
+## DeFi Caveats and Risks
+
+- generally high transaction fees on L1
+- smart contract risk
+- impermanent loss
+- liquidation risk
+
 ## Defi Building Blocks
 
 - ERC-20 (fungible tokens)
@@ -37,3 +44,12 @@
 - Liquidity Mining
   - Reward investors for providing liquid (depositing some asset) into a pool by providing them some governance token
   - https://medium.com/bollinger-investment-group/liquidity-mining-a-user-centric-token-distribution-strategy-1d05c5174641
+- Yield Farming, some strategies
+  - Crop Rotation: ex. via yield aggregrators like Yearn
+  - Recursive Yield Farming: ex. USDC + USDT -> Compound -> Curve, etc.
+  - Leverage Yield Farming
+- Flashloans
+  - borrow and reimburse within a single block; no collateral required
+  - use cases:
+    - arbitrage
+    - liquidations
