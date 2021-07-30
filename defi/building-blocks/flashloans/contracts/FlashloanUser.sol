@@ -21,19 +21,16 @@ contract FlashloanUser is IFlashloanUser {
         FlashloanProvider(flashloan).executeFlashloan(
             address(this),
             amount,
-            token,
-            bytes("")
+            token
         );
     }
 
     /// @notice flashloan callback after starting one
-    /// @param data arbitrary data
-    function flashloanCallback(
-        uint256 amount,
-        address token,
-        bytes memory data
-    ) external override {
-        // do something with loan and profit
+    function flashloanCallback(uint256 amount, address token)
+        external
+        override
+    {
+        // do something with loan and hopefully profit
 
         // FlashloanProvider needs to protect against reentrancy attacks here
 

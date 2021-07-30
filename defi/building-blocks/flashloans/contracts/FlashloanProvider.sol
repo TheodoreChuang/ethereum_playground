@@ -23,12 +23,10 @@ contract FlashloanProvider is ReentrancyGuard {
     /// @param callback initiator
     /// @param amount amount to borrow
     /// @param _token token to borrow
-    /// @param data arbitrary data
     function executeFlashloan(
         address callback,
         uint256 amount,
-        address _token,
-        bytes memory data
+        address _token
     ) external nonReentrant() {
         IERC20 token = tokens[_token];
         require(address(token) != address(0), "token not supported");
@@ -37,7 +35,7 @@ contract FlashloanProvider is ReentrancyGuard {
         require(originalBalance >= amount, "amount too high");
 
         token.transfer(callback, amount);
-        IFlashloanUser(callback).flashloanCallback(amount, _token, data);
+        IFlashloanUser(callback).flashloanCallback(amount, _token);
 
         require(
             token.balanceOf(address(this)) == originalBalance,
