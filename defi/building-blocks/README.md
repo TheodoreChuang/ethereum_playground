@@ -53,3 +53,7 @@
   - use cases:
     - arbitrage
     - liquidations
+- DAO (Decentralised Autonomous Organization)
+  - Members can create proposals for the community to vote on if proposer has sufficient shares (governance tokens)
+  - Any member can vote on any proposal, weigthed by their number of shares (governance tokens)
+  - Proposals automatically closed once quorum is meet
