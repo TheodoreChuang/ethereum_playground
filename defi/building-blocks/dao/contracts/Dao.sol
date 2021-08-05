@@ -1,7 +1,6 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.4;
 
-import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract Dao {
@@ -35,7 +34,7 @@ contract Dao {
     mapping(address => uint256) public shares; // governance token
 
     constructor(address _token) {
-        token = _token;
+        token = IERC20(_token);
     }
 
     /// @notice Deposit governance tokens/shares in order to participate in the DAO
@@ -45,8 +44,14 @@ contract Dao {
         token.transferFrom(msg.sender, address(this), amount);
     }
 
-    /// @notice Withdrawn previously deposited governance tokens/shares
-    function withdrawn(uint256 amount) external {
+    /// @notice Withdraw previously deposited governance tokens/shares
+    function withdraw(uint256 amount) external {
+        require(
+            shares[msg.sender] >= amount,
+            "you cannot withdraw more other your own shares"
+        );
+        require(totalShares >= amount, "DAO does not have enough shares");
+
         shares[msg.sender] -= amount;
         totalShares -= amount;
         token.transfer(msg.sender, amount);

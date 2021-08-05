@@ -21,6 +21,9 @@ Deploy your frontend
 - https://hardhat.org/getting-started/
 - https://hardhat.org/tutorial/testing-contracts.html
 
+Dependencies:
+If using "@openzeppelin/test-helpers", then "require("@nomiclabs/hardhat-web3")"
+
 ### Nodes (Infura, Alchemy)
 
 #### How to use Infura?
