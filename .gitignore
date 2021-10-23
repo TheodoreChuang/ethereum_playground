@@ -2,6 +2,8 @@
 node_modules
 
 # Environment file
-*.env
+*.env.*
 
 reference_contracts
+
+**/.next
