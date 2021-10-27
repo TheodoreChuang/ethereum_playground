@@ -25,7 +25,11 @@ V0.0.1 - NFT with on-chain metadata
 - https://testnets.opensea.io/collection/squarenft-ibalhqqhbv
 - https://rinkeby.rarible.com/token/0xC150E98B2F1e5159F3a9b4E8F2771DF0d1214323:<tokenId>
 
-Metadata will be stored as base64 encoded JSON.
+V0.0.2 - Emit Event after minting
+
+- https://rinkeby.etherscan.io/address/0xF73c2eac06Bb6cD1310AE5870968ef25D2acf210
+
+### Metadata will be stored as base64 encoded JSON.
 
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">
@@ -60,6 +64,13 @@ data:application/json;base64,ewogICAgIm5hbWUiOiAiRXBpY0xvcmRIYW1idXJnZXIiLAogICA
 - https://jsonkeeper.com
 - https://www.svgviewer.dev/
 - https://www.utilities-online.info/base64
+
+## Future Enchancements
+
+- Contract: randomize other attributes (ex. colors)
+- Contract/UI: supply cap
+- UI: Minting animation and feedback
+- UI: Displaying collection or at least linking to OpenSea, Rariable
 
 ## Basic Sample Hardhat Project
 

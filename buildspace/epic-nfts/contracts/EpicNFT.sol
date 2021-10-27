@@ -69,6 +69,8 @@ contract EpicNFT is ERC721URIStorage {
         "Siberian"
     ];
 
+    event NewEpicNFTMinted(address sender, uint256 tokenId);
+
     constructor() ERC721("SquareNFT", "SQUARE") {
         console.log("EpicNFT constructor");
     }
@@ -137,6 +139,8 @@ contract EpicNFT is ERC721URIStorage {
             newItemId,
             msg.sender
         );
+
+        emit NewEpicNFTMinted(msg.sender, newItemId);
     }
 
     function pickRandomWordFromList(
