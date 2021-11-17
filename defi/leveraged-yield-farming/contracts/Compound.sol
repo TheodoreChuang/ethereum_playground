@@ -8,10 +8,10 @@ import "./interfaces/IComptroller.sol";
  * @notice Adapter for Compound
  */
 contract Compound {
-    ComptrollerInterface public comptroller;
+    IComptroller public comptroller;
 
     constructor(address _comptroller) public {
-        comptroller = ComptrollerInterface(_comptroller);
+        comptroller = IComptroller(_comptroller);
     }
 
     function supply(address cTokenAddress, uint256 underlyingAmount) internal {
