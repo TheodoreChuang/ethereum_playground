@@ -54,6 +54,38 @@
       "type": "function"
     },
     {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "number",
+              "type": "uint256"
+            }
+          ],
+          "name": "account",
+          "type": "tuple"
+        },
+        {
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "callFunction",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
       "constant": true,
       "inputs": [],
       "name": "owner",
@@ -66,12 +98,6 @@
       "payable": false,
       "stateMutability": "view",
       "type": "function"
-    },
-    {
-      "inputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "constructor"
     },
     {
       "constant": false,
@@ -126,36 +152,15 @@
       "type": "function"
     },
     {
-      "constant": false,
       "inputs": [
         {
-          "name": "sender",
+          "name": "_comptroller",
           "type": "address"
-        },
-        {
-          "components": [
-            {
-              "name": "owner",
-              "type": "address"
-            },
-            {
-              "name": "number",
-              "type": "uint256"
-            }
-          ],
-          "name": "account",
-          "type": "tuple"
-        },
-        {
-          "name": "data",
-          "type": "bytes"
         }
       ],
-      "name": "callFunction",
-      "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "constructor"
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.5.7+commit.6da8b019\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[{\"name\":\"cTokenAddress\",\"type\":\"address\"}],\"name\":\"getcTokenBalance\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"comptroller\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"cTokenAddress\",\"type\":\"address\"}],\"name\":\"getBorrowBalance\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"sender\",\"type\":\"address\"},{\"components\":[{\"name\":\"owner\",\"type\":\"address\"},{\"name\":\"number\",\"type\":\"uint256\"}],\"name\":\"account\",\"type\":\"tuple\"},{\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"callFunction\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_solo\",\"type\":\"address\"},{\"name\":\"_token\",\"type\":\"address\"},{\"name\":\"_cToken\",\"type\":\"address\"},{\"name\":\"_amountProvided\",\"type\":\"uint256\"},{\"name\":\"_amountBorrowed\",\"type\":\"uint256\"}],\"name\":\"openPosition\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_solo\",\"type\":\"address\"},{\"name\":\"_token\",\"type\":\"address\"},{\"name\":\"_cToken\",\"type\":\"address\"}],\"name\":\"closePosition\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/jklepatch/ETB/code/defi-development-mastery/4-project-yield-farming/contracts/YieldFarmer.sol\":\"YieldFarmer\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/jklepatch/ETB/code/defi-development-mastery/4-project-yield-farming/contracts/CTokenInterface.sol\":{\"keccak256\":\"0x6424f5411bb3a5ad0fda0ca5aed78aa29377ba89e93fc3348f2165a14f0c99ef\",\"urls\":[\"bzzr://007dc3a4394f753679b44a94bbf0bc6c4d544ceb917d0070781793d8e467d7c0\"]},\"/Users/jklepatch/ETB/code/defi-development-mastery/4-project-yield-farming/contracts/Compound.sol\":{\"keccak256\":\"0x3de39ed8dbba3fc9c5e239a10f8169e8fe16d744a170ba2239219644ea9de9b7\",\"urls\":[\"bzzr://d8ae6755db554ba236082413bc14eb8bffb3c2b25bdb3ef39f14ba9ddd8243b8\"]},\"/Users/jklepatch/ETB/code/defi-development-mastery/4-project-yield-farming/contracts/ComptrollerInterface.sol\":{\"keccak256\":\"0x6331c3bb5036409809814b30b5b31819a89f38278e2a378c8f59856c7ff018a7\",\"urls\":[\"bzzr://5523c51aa855979a1455ca15a49e912feeac6687c70e2d7a8d922aa86befeab3\"]},\"/Users/jklepatch/ETB/code/defi-development-mastery/4-project-yield-farming/contracts/YieldFarmer.sol\":{\"keccak256\":\"0x52a5ce644fbb195a6f8e63260b23cbdd98c268141079dda451928feb1d3a9f29\",\"urls\":[\"bzzr://9c9a34a39b7cca440d4dc8f861cdb01aacafda8eaa84859d0277fd112ca60b85\"]},\"@openzeppelin/contracts/math/SafeMath.sol\":{\"keccak256\":\"0x640b6dee7a4b830bdfd52b5031a07fc2b12209f5b2e29e5d364a7d37f69d8076\",\"urls\":[\"bzzr://292843005e754e752644f767477ec5ad7a1ffc91ddb18c38b8079c62f3993cad\"]},\"@openzeppelin/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0xe5bb0f57cff3e299f360052ba50f1ea0fff046df2be070b6943e0e3c3fdad8a9\",\"urls\":[\"bzzr://cf2d583b8dce38d0617fdcd65f2fd9f126fe17b7f683b5a515ea9d2762d8b062\"]},\"@studydefi/money-legos/dydx/contracts/DydxFlashloanBase.sol\":{\"keccak256\":\"0x38ed93310b0d51caec8ae8b2e861269b13bd27da164040d2ad8864d44dda3733\",\"urls\":[\"bzzr://f11046c33fc40dfca5cd9f5dc1a46be819998f6f2d2304208cbc798f432ab2b7\"]},\"@studydefi/money-legos/dydx/contracts/ICallee.sol\":{\"keccak256\":\"0x981d182383e48badb7ccd39b28155819ddb27c801dc1b7cca8073f42c8f1e949\",\"urls\":[\"bzzr://161788163a9d5df91076d3caaa8c3490297dee22eb841e3ab8f30f8d83a62d55\"]},\"@studydefi/money-legos/dydx/contracts/ISoloMargin.sol\":{\"keccak256\":\"0xfcc0cd7be9dded596cd0d13873bd360743d823ec5e2a204992bd866385b8a6bf\",\"urls\":[\"bzzr://c6b2500dbdf9d1b12e85455b6974809174601c728f006242207b27eac2e808b0\"]}},\"version\":1}",
