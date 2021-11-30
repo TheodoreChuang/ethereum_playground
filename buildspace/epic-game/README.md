@@ -22,7 +22,7 @@ V0.0.1 - Big boss:
 - Emit events
 - Add several getter functions
 
-- https://rinkeby.etherscan.io/address/0x1E938120f67b32Ad156487FBA837Bdfa18e7A485
+- https://rinkeby.etherscan.io/address/0xe1d96873E25c2C9238EFb7f8c080769C033088eD
 
 ## ERC721
 

@@ -28,9 +28,12 @@ const main = async () => {
   let txn = await epicGame.mintCharacterNFT(2);
   await txn.wait();
 
+  const nft = await epicGame.checkIfUserHasNFT();
+  console.log("Stepping up to the plate is:", nft.name);
+
   // tokenURI(): returns the actual data attached to the NFT (ERC721)
-  const returnedTokenUri = await epicGame.tokenURI(1);
-  console.log("Token URI:", returnedTokenUri);
+  // const returnedTokenUri = await epicGame.tokenURI(1);
+  // console.log("Token URI:", returnedTokenUri);
 
   txn = await epicGame.attackBoss();
   await txn.wait();

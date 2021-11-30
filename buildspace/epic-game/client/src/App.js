@@ -1,8 +1,12 @@
+import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import twitterLogo from "./assets/twitter-logo.svg";
+
 import "./App.css";
+import twitterLogo from "./assets/twitter-logo.svg";
+import { EpicGame, transformCharacterData } from "./utils";
+
 import SelectCharacter from "./Components/SelectCharacter";
-import { CONTRACT_ADDRESS } from "./constants";
+import { EPIC_GAME_CONTRACT_ADDRESS } from "./constants";
 
 // Constants
 const TWITTER_HANDLE = "_buildspace";
@@ -75,6 +79,32 @@ const App = () => {
   useEffect(() => {
     checkIfWalletIsConnected();
   }, []);
+
+  useEffect(() => {
+    const fetchNFTMetadata = async () => {
+      console.log("Checking for Character NFT on address:", currentAccount);
+
+      try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const epicGame = new ethers.Contract(EPIC_GAME_CONTRACT_ADDRESS, EpicGame.abi, signer);
+
+        const txn = await epicGame.checkIfUserHasNFT();
+        if (txn.name) {
+          console.log("User has character NFT");
+          setCharacterNFT(transformCharacterData(txn));
+        } else {
+          console.log("No character NFT found");
+        }
+      } catch (error) {
+        console.error("fetchNFTMetadata():", error);
+      }
+    };
+
+    if (currentAccount) {
+      fetchNFTMetadata();
+    }
+  }, [currentAccount]);
 
   return (
     <div className="App">
