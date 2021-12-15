@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 
 import "./App.css";
 import twitterLogo from "./assets/twitter-logo.svg";
-import { EpicGame, transformCharacterData } from "./utils";
-
-import SelectCharacter from "./Components/SelectCharacter";
 import { EPIC_GAME_CONTRACT_ADDRESS } from "./constants";
+import { EpicGame, transformCharacterData } from "./utils";
+import SelectCharacter from "./Components/SelectCharacter";
+import Arena from "./Components/Arena";
 
 // Constants
 const TWITTER_HANDLE = "_buildspace";
@@ -24,6 +24,10 @@ const App = () => {
         return;
       } else {
         console.log("We have the ethereum object", ethereum);
+
+        if (ethereum.chainId !== "0x4") {
+          console.warn("Contract is only on the Rinkeby network, recommend switching Networks in MetaMask");
+        }
 
         const accounts = await ethereum.request({ method: "eth_accounts" });
 
@@ -56,10 +60,10 @@ const App = () => {
     }
   };
 
+  /**
+   * Determine content depending on account's state
+   */
   const renderContent = () => {
-    /*
-     * Scenario #1
-     */
     if (!currentAccount) {
       return (
         <div className="connect-wallet-container">
@@ -68,11 +72,10 @@ const App = () => {
           </button>
         </div>
       );
-      /*
-       * Scenario #2
-       */
     } else if (currentAccount && !characterNFT) {
       return <SelectCharacter setCharacterNFT={setCharacterNFT} />;
+    } else if (currentAccount && characterNFT) {
+      return <Arena characterNFT={characterNFT} setCharacterNFT={setCharacterNFT} />;
     }
   };
 
