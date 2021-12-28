@@ -5,8 +5,9 @@ import "./App.css";
 import twitterLogo from "./assets/twitter-logo.svg";
 import { EPIC_GAME_CONTRACT_ADDRESS } from "./constants";
 import { EpicGame, transformCharacterData } from "./utils";
-import SelectCharacter from "./Components/SelectCharacter";
 import Arena from "./Components/Arena";
+import LoadingIndicator from "./Components/LoadingIndicator";
+import SelectCharacter from "./Components/SelectCharacter";
 
 // Constants
 const TWITTER_HANDLE = "_buildspace";
@@ -15,18 +16,20 @@ const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 const App = () => {
   const [currentAccount, setCurrentAccount] = useState(null);
   const [characterNFT, setCharacterNFT] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const checkIfWalletIsConnected = async () => {
     try {
       const { ethereum } = window;
       if (!ethereum) {
         console.log("Make sure you have MetaMask!");
+        setIsLoading(false);
         return;
       } else {
         console.log("We have the ethereum object", ethereum);
 
-        if (ethereum.chainId !== "0x4") {
-          console.warn("Contract is only on the Rinkeby network, recommend switching Networks in MetaMask");
+        if (ethereum.chainId !== null && ethereum.chainId !== "0x4") {
+          alert("Switch to the Rinkeby network to play.");
         }
 
         const accounts = await ethereum.request({ method: "eth_accounts" });
@@ -37,6 +40,7 @@ const App = () => {
         } else {
           console.log("No authorized account found");
         }
+        setIsLoading(false);
       }
     } catch (error) {
       console.warn(error);
@@ -64,6 +68,10 @@ const App = () => {
    * Determine content depending on account's state
    */
   const renderContent = () => {
+    if (isLoading) {
+      return <LoadingIndicator />;
+    }
+
     if (!currentAccount) {
       return (
         <div className="connect-wallet-container">
@@ -80,6 +88,7 @@ const App = () => {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     checkIfWalletIsConnected();
   }, []);
 
@@ -102,6 +111,8 @@ const App = () => {
       } catch (error) {
         console.error("fetchNFTMetadata():", error);
       }
+
+      setIsLoading(false);
     };
 
     if (currentAccount) {
