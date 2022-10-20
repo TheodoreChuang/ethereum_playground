@@ -14,7 +14,7 @@ library PriceConverter {
         );
         (, int256 price, , , ) = priceFeed.latestRoundData();
 
-        // price has 8 decimals, so multiple by 1e10 to match the decimals of ETH
+        // Price has 8 decimals, so multiple by 1e10 to match the decimals of ETH
         return uint256(price * 1e10);
     }
 
