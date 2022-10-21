@@ -29,3 +29,9 @@ Goerli: 0x9Ad1e6BFFF0F7d592EE37f674a880d9bA4AebD7C
   - Gas optimisations
     - constant and immutable (2) (-42151)
     - custom errors (3) (-83069)
+
+#### v1.4.0
+
+- FundMe.sol
+  - Add receive
+  - Add fallback
