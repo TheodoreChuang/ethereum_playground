@@ -3,6 +3,10 @@ pragma solidity 0.8.8;
 
 import "./PriceConverter.sol";
 
+error InsufficientAmount(uint256 amount);
+error OnlyOwner();
+error WithdrawFailed();
+
 /// @notice Crowd funding
 /// @author teddy
 /// @custom:version 1.2.0
@@ -10,24 +14,24 @@ contract FundMe {
     // Attach library to type
     using PriceConverter for uint256;
 
-    address public owner;
-    uint256 public minimumUsd = 49 * 1e18; // match decimals of ETH
+    address public immutable i_owner;
+    uint256 public constant MINIMUM_USD = 49 * 1e18; // match decimals of ETH
 
     address[] public funders;
     mapping(address => uint256) public addressToAmountFunded;
 
     constructor() {
-        owner = msg.sender;
+        i_owner = msg.sender;
     }
 
     /// @notice Donors can contribute funds (ETH)
     function fund() public payable {
-        require(
-            // msg.value is implicitly passed as the first arg into convertEthToUsd
-            msg.value.convertEthToUsd() > minimumUsd,
-            "Didn't meet minimal funding amount"
-        );
-        // Optimisation: dedupe multiple contributions from the same sender
+        // msg.value is implicitly passed as the first arg into convertEthToUsd
+        uint256 amount = msg.value.convertEthToUsd();
+        if (amount < MINIMUM_USD) {
+            revert InsufficientAmount(amount);
+        }
+        // Gas Optimisation?: dedupe multiple contributions from the same sender
         funders.push(msg.sender);
         addressToAmountFunded[msg.sender] += msg.value;
     }
@@ -49,12 +53,16 @@ contract FundMe {
         (bool callSuccess, ) = payable(msg.sender).call{
             value: address(this).balance
         }("");
-        require(callSuccess, "Call failed to withdraw ETH");
+        if (!callSuccess) {
+            revert WithdrawFailed();
+        }
     }
 
     /// @notice Access control: only owner of the contract
     modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner");
+        if (msg.sender != i_owner) {
+            revert OnlyOwner();
+        }
         _;
     }
 }
