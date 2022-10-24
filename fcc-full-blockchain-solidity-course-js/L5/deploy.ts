@@ -11,7 +11,17 @@ async function main() {
   const myArgs = process.argv.slice(2)
 
   let provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL)
+
+  // Wallet via private key
   let wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider)
+  // Or wallet via encrypted key
+  // const encryptedJson = fs.readFileSync("./.encryptedKey.json", "utf8")
+  // let wallet = ethers.Wallet.fromEncryptedJsonSync(
+  //   encryptedJson,
+  //   process.env.PRIVATE_KEY_PASSWORD ?? ""
+  // )
+  // wallet = wallet.connect(provider)
+
   /**
    * Deploy SimpleStorage.sol via ethers contractFactory
    */
