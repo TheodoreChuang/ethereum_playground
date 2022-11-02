@@ -13,9 +13,15 @@ $ yarn hardhat node
 Terminal 2 (run commands):
 
 ```
+<!-- Compile contract and typechain -->
 $ yarn hardhat compile
+<!-- run custom task: block-number -->
 $ yarn hardhat block-number
+<!-- run tests -->
 $ yarn hardhat test
+<!-- run test coverage -->
+$ yarn hardhat coverage
+<!-- run a script -->
 $ yarn hardhat run scripts/deploy.ts
 ```
 
