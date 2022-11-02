@@ -2,7 +2,8 @@
 node_modules
 
 # Environment file
-*.env.*
+.env
+.env.local
 .vscode
 
 reference_contracts
