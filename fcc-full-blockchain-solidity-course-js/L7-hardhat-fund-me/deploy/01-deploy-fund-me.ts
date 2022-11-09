@@ -10,15 +10,18 @@ const deployFundMe: DeployFunction = async ({
 }: HardhatRuntimeEnvironment) => {
   const { deploy, log } = deployments
   const { deployer } = await getNamedAccounts()
+  const chainId = network.config.chainId
 
   let ethUsdPriceFeedAddress: string
+  if (chainId === 31337) {
+    const ethUsdAggregator = await deployments.get("MockV3Aggregator")
+    ethUsdPriceFeedAddress = ethUsdAggregator.address
+  } else {
+    ethUsdPriceFeedAddress = networkConfig[network.name].ethUsdPriceFeed!
+  }
 
-  // TODO - for local development need to mock price oracle
-  ethUsdPriceFeedAddress = networkConfig[network.name].ethUsdPriceFeed!
-
-  console.log(
-    `Deploying FundMe to ${network.name} and waitng for confirmations`
-  )
+  log("----------------------------------")
+  log(`Deploying FundMe to ${network.name} and waitng for confirmations`)
   const fundMe = await deploy("FundMe", {
     from: deployer,
     args: [ethUsdPriceFeedAddress],
@@ -28,3 +31,5 @@ const deployFundMe: DeployFunction = async ({
 }
 
 export default deployFundMe
+
+deployFundMe.tags = ["all", "fundMe"]
