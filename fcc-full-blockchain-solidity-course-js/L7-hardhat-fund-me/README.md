@@ -44,13 +44,18 @@ yarn
 yarn typechain
 ```
 
-# Useage
+# Usage
 
 Deploy:
 
 ```
 yarn hardhat deploy
 ```
+
+#### Testnet Deployments
+
+Contracts matching commit 368f4fcdb07a206ea938bd920dbd3ae5e0c86ee6
+https://goerli.etherscan.io/address/0x9c80f28e6c029b13719b79b0b027368fa8d43b23
 
 ## Testing
 
