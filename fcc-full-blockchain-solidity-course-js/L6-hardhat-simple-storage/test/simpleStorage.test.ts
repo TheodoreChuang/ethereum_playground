@@ -20,9 +20,9 @@ describe("SimpleStorage contract", () => {
 
   it("should update when we call store", async () => {
     const expectedValue = 7;
-    const trxRes = await simpleStorage.store(expectedValue);
+    const txRes = await simpleStorage.store(expectedValue);
 
-    await trxRes.wait();
+    await txRes.wait();
     const currentValue = await simpleStorage.retrieve();
     expect(currentValue).to.equal(expectedValue);
   });

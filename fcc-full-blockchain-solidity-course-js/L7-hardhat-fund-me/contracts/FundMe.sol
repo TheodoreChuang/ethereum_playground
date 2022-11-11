@@ -4,14 +4,15 @@ pragma solidity 0.8.8;
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "./PriceConverter.sol";
 
-error InsufficientAmount(uint256 amount);
-error OnlyOwner();
-error WithdrawFailed();
+error FundMe__InsufficientAmount(uint256 amount);
+error FundMe__OnlyOwner();
+error FundMe__WithdrawFailed();
 
-/// @notice Crowd funding
+/// @title A contract for crowd funding
 /// @author teddy
+/// @notice This contract is to demo a sample funding contract
+/// @dev Contract for tested for production
 contract FundMe {
-  // Attach library to type
   using PriceConverter for uint256;
 
   address public immutable i_owner;
@@ -20,28 +21,42 @@ contract FundMe {
   address[] public funders;
   mapping(address => uint256) public addressToAmountFunded;
 
-  // ie. Goerli | Chainlink price feed | ETH / USD - 0xD4a33860578De61DBAbDc8BFdb98FD742fA7028e
   AggregatorV3Interface public priceFeed;
+
+  /// @notice Access control: only owner of the contract
+  modifier onlyOwner() {
+    if (msg.sender != i_owner) {
+      revert FundMe__OnlyOwner();
+    }
+    _;
+  }
 
   constructor(address priceFeedAddress) {
     i_owner = msg.sender;
     priceFeed = AggregatorV3Interface(priceFeedAddress);
   }
 
+  receive() external payable {
+    fund();
+  }
+
+  fallback() external payable {
+    fund();
+  }
+
   /// @notice Donors can contribute funds (ETH)
   function fund() public payable {
-    // msg.value is implicitly passed as the first arg into convertEthToUsd
     uint256 amount = msg.value.convertEthToUsd(priceFeed);
     if (amount < MINIMUM_USD) {
-      revert InsufficientAmount(amount);
+      revert FundMe__InsufficientAmount(amount);
     }
-    // Gas Optimisation?: dedupe multiple contributions from the same sender
+
     funders.push(msg.sender);
     addressToAmountFunded[msg.sender] += msg.value;
   }
 
   /// @notice Owner can withdraw all funds (ETH) into their address
-  /// Reset funders state
+  /// @dev Reset funders state
   function withdraw() public onlyOwner {
     for (uint256 funderIndex = 0; funderIndex < funders.length; funderIndex++) {
       address funder = funders[funderIndex];
@@ -54,23 +69,7 @@ contract FundMe {
       value: address(this).balance
     }("");
     if (!callSuccess) {
-      revert WithdrawFailed();
+      revert FundMe__WithdrawFailed();
     }
-  }
-
-  /// @notice Access control: only owner of the contract
-  modifier onlyOwner() {
-    if (msg.sender != i_owner) {
-      revert OnlyOwner();
-    }
-    _;
-  }
-
-  receive() external payable {
-    fund();
-  }
-
-  fallback() external payable {
-    fund();
   }
 }
