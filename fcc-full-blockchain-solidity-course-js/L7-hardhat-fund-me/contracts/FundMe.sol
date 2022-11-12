@@ -18,10 +18,10 @@ contract FundMe {
   address public immutable i_owner;
   uint256 public constant MINIMUM_USD = 49 * 1e18; // match decimals of ETH
 
-  address[] public funders;
-  mapping(address => uint256) public addressToAmountFunded;
+  address[] public s_funders;
+  mapping(address => uint256) public s_addressToAmountFunded;
 
-  AggregatorV3Interface public priceFeed;
+  AggregatorV3Interface public s_priceFeed;
 
   /// @notice Access control: only owner of the contract
   modifier onlyOwner() {
@@ -33,7 +33,7 @@ contract FundMe {
 
   constructor(address priceFeedAddress) {
     i_owner = msg.sender;
-    priceFeed = AggregatorV3Interface(priceFeedAddress);
+    s_priceFeed = AggregatorV3Interface(priceFeedAddress);
   }
 
   receive() external payable {
@@ -46,24 +46,25 @@ contract FundMe {
 
   /// @notice Donors can contribute funds (ETH)
   function fund() public payable {
-    uint256 amount = msg.value.convertEthToUsd(priceFeed);
+    uint256 amount = msg.value.convertEthToUsd(s_priceFeed);
     if (amount < MINIMUM_USD) {
       revert FundMe__InsufficientAmount(amount);
     }
 
-    funders.push(msg.sender);
-    addressToAmountFunded[msg.sender] += msg.value;
+    s_funders.push(msg.sender);
+    s_addressToAmountFunded[msg.sender] += msg.value;
   }
 
   /// @notice Owner can withdraw all funds (ETH) into their address
   /// @dev Reset funders state
   function withdraw() public onlyOwner {
+    address[] memory funders = s_funders;
     for (uint256 funderIndex = 0; funderIndex < funders.length; funderIndex++) {
-      address funder = funders[funderIndex];
-      addressToAmountFunded[funder] = 0;
+      address funder = s_funders[funderIndex];
+      s_addressToAmountFunded[funder] = 0;
     }
 
-    funders = new address[](0);
+    s_funders = new address[](0);
 
     (bool callSuccess, ) = payable(msg.sender).call{
       value: address(this).balance
