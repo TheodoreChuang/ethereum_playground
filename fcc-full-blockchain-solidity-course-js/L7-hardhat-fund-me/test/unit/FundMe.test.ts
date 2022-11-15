@@ -21,7 +21,7 @@ describe("FundMe", async () => {
 
   describe("constructor", () => {
     it("should set aggregator address correctly", async () => {
-      const response = await fundMe.s_priceFeed()
+      const response = await fundMe.getPriceFeed()
       assert.equal(response, mockV3Aggregator.address)
     })
   })
@@ -36,14 +36,14 @@ describe("FundMe", async () => {
     it("should capture the amount contributed by donor", async () => {
       await fundMe.fund({ from: deployer, value: SEND_VALUE })
 
-      const amount = await fundMe.s_addressToAmountFunded(deployer)
+      const amount = await fundMe.getAddressToAmountFunded(deployer)
       assert.equal(amount.toString(), SEND_VALUE.toString())
     })
 
     it("should add donor to funders", async () => {
       await fundMe.fund({ from: deployer, value: SEND_VALUE })
 
-      const funder = await fundMe.s_funders(0)
+      const funder = await fundMe.getFunders(0)
       assert.equal(funder, deployer)
     })
   })
@@ -110,7 +110,7 @@ describe("FundMe", async () => {
       for (let i = 1; i < 3; i++) {
         assert.equal(
           await (
-            await fundMe.s_addressToAmountFunded(accounts[i].address)
+            await fundMe.getAddressToAmountFunded(accounts[i].address)
           ).toString(),
           "0"
         )
@@ -121,7 +121,7 @@ describe("FundMe", async () => {
       const txResponse = await fundMe.withdraw()
       await txResponse.wait(1)
 
-      await expect(fundMe.s_funders(0)).to.be.reverted
+      await expect(fundMe.getFunders(0)).to.be.reverted
     })
 
     it("should revert if non-owner attempts to withdraw", async () => {

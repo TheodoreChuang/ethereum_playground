@@ -15,13 +15,13 @@ error FundMe__WithdrawFailed();
 contract FundMe {
   using PriceConverter for uint256;
 
-  address public immutable i_owner;
+  address private immutable i_owner;
   uint256 public constant MINIMUM_USD = 49 * 1e18; // match decimals of ETH
 
-  address[] public s_funders;
-  mapping(address => uint256) public s_addressToAmountFunded;
+  address[] private s_funders;
+  mapping(address => uint256) private s_addressToAmountFunded;
 
-  AggregatorV3Interface public s_priceFeed;
+  AggregatorV3Interface private s_priceFeed;
 
   /// @notice Access control: only owner of the contract
   modifier onlyOwner() {
@@ -53,6 +53,26 @@ contract FundMe {
 
     s_funders.push(msg.sender);
     s_addressToAmountFunded[msg.sender] += msg.value;
+  }
+
+  function getAddressToAmountFunded(address funder)
+    public
+    view
+    returns (uint256)
+  {
+    return s_addressToAmountFunded[funder];
+  }
+
+  function getFunders(uint256 index) public view returns (address) {
+    return s_funders[index];
+  }
+
+  function getOwner() public view returns (address) {
+    return i_owner;
+  }
+
+  function getPriceFeed() public view returns (AggregatorV3Interface) {
+    return s_priceFeed;
   }
 
   /// @notice Owner can withdraw all funds (ETH) into their address
