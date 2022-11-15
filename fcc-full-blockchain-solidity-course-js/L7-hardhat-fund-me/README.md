@@ -59,8 +59,15 @@ https://goerli.etherscan.io/address/0x9c80f28e6c029b13719b79b0b027368fa8d43b23
 
 ## Testing
 
+Local tests are located in `test/unit`.
 ```
 yarn hardhat test
+```
+
+Testnet tests are located in `test/staging` and assume the contracts have already been deployed.
+
+```
+yarn hardhat test --network <goerli>
 ```
 
 ### Test Coverage
