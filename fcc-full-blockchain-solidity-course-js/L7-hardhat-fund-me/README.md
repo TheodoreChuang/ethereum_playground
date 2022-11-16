@@ -101,13 +101,13 @@ yarn hardhat deploy --network goerli
 After deploy to a testnet or local net, you can run the scripts.
 
 ```
-yarn hardhat run scripts/fund.ts
+yarn hardhat run scripts/fund.ts --network <localhost>
 ```
 
 or
 
 ```
-yarn hardhat run scripts/withdraw.ts
+yarn hardhat run scripts/withdraw.ts --network <localhost>
 ```
 
 ## Estimate gas
