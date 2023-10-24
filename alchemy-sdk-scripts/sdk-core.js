@@ -1,4 +1,5 @@
 const SDK = require("alchemy-sdk");
+require("dotenv").config();
 
 // Optional Config object, but defaults to demo api-key and eth-mainnet.
 const settings = {

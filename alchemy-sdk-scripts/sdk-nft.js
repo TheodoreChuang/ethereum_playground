@@ -1,4 +1,5 @@
 const SDK = require("alchemy-sdk");
+require("dotenv").config();
 
 // Optional Config object, but defaults to demo api-key and eth-mainnet.
 const settings = {
@@ -24,29 +25,29 @@ alchemy.nft
   .then(console.log);
 
 // Get how many NFTs an address owns.
-// alchemy.nft.getNftsForOwner(queryAddress).then(nfts => {
-//   console.log(nfts.totalCount);
-// });
+alchemy.nft.getNftsForOwner(queryAddress).then(nfts => {
+  console.log(nfts.totalCount);
+});
 
 // Get all the image urls for all the NFTs an address owns.
-// async function getAllNftImageUrlForAddress() {
-//   for await (const nft of alchemy.nft.getNftsForOwnerIterator(queryAddress)) {
-//     console.log(nft.media);
-//   }
-// }
-// getAllNftImageUrlForAddress();
+async function getAllNftImageUrlForAddress() {
+  for await (const nft of alchemy.nft.getNftsForOwnerIterator(queryAddress)) {
+    console.log(nft.media);
+  }
+}
+getAllNftImageUrlForAddress();
 
 // getAllOwnersForNftAddress
 // Bored Ape Yacht Club contract address.
-// const nftAddress = "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D";
-// async function getAllOwnersForNftAddress() {
-//   for await (const nft of alchemy.nft.getNftsForContractIterator(nftAddress, {
-//     // Omit the NFT metadata for smaller payloads.
-//     omitMetadata: true,
-//   })) {
-//     await alchemy.nft
-//       .getOwnersForNft(nft.contract.address, nft.tokenId)
-//       .then(response => console.log("owners:", response.owners, "tokenId:", nft.tokenId));
-//   }
-// }
-// getAllOwnersForNftAddress();
+const nftAddress = "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D";
+async function getAllOwnersForNftAddress() {
+  for await (const nft of alchemy.nft.getNftsForContractIterator(nftAddress, {
+    // Omit the NFT metadata for smaller payloads.
+    omitMetadata: true,
+  })) {
+    await alchemy.nft
+      .getOwnersForNft(nft.contract.address, nft.tokenId)
+      .then(response => console.log("owners:", response.owners, "tokenId:", nft.tokenId));
+  }
+}
+getAllOwnersForNftAddress();
