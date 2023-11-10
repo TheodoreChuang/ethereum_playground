@@ -92,10 +92,12 @@ contract ThunderLoan is Initializable, OwnableUpgradeable, UUPSUpgradeable, Orac
     //////////////////////////////////////////////////////////////*/
     mapping(IERC20 => AssetToken) public s_tokenToAssetToken;
 
+    // @audit-follow-up What about ERC20 that are not 18 decimals (ex. USDC)?
     // The fee in WEI, it should have 18 decimals. Each flash loan takes a flat fee of the token price.
     uint256 private s_feePrecision;
     uint256 private s_flashLoanFee; // 0.3% ETH fee
 
+    // @audit-follow-up What happens when there are concurrent loans for the same token?
     mapping(IERC20 token => bool currentlyFlashLoaning) private s_currentlyFlashLoaning;
 
     /*//////////////////////////////////////////////////////////////
@@ -140,6 +142,7 @@ contract ThunderLoan is Initializable, OwnableUpgradeable, UUPSUpgradeable, Orac
         __Ownable_init();
         __UUPSUpgradeable_init();
         __Oracle_init(tswapAddress);
+        // @audit-suggestion Since s_feePrecision is hard keyed and not updated, might as well set with as constants 
         s_feePrecision = 1e18;
         s_flashLoanFee = 3e15; // 0.3% ETH fee
     }
@@ -152,6 +155,7 @@ contract ThunderLoan is Initializable, OwnableUpgradeable, UUPSUpgradeable, Orac
         assetToken.mint(msg.sender, mintAmount);
         uint256 calculatedFee = getCalculatedFee(token, amount);
         assetToken.updateExchangeRate(calculatedFee);
+        // // @audit-follow-up Should safeTransferFrom's amount be mintAmount?
         token.safeTransferFrom(msg.sender, address(assetToken), amount);
     }
 
@@ -229,7 +233,9 @@ contract ThunderLoan is Initializable, OwnableUpgradeable, UUPSUpgradeable, Orac
             if (address(s_tokenToAssetToken[token]) != address(0)) {
                 revert ThunderLoan__AlreadyAllowed();
             }
+            // @audit-follow-up What happens on name conflict? Low issue since onlyOwner
             string memory name = string.concat("ThunderLoan ", IERC20Metadata(address(token)).name());
+            // @audit-follow-up What happens on symbol conflict? Low issue since onlyOwner
             string memory symbol = string.concat("tl", IERC20Metadata(address(token)).symbol());
             AssetToken assetToken = new AssetToken(address(this), token, name, symbol);
             s_tokenToAssetToken[token] = assetToken;
