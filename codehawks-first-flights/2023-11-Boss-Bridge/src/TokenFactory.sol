@@ -21,6 +21,8 @@ contract TokenFactory is Ownable {
      * @param contractBytecode The bytecode of the new token
      */
     function deployToken(string memory symbol, bytes memory contractBytecode) public onlyOwner returns (address addr) {
+        // @audit-issue Known issue? Should first check symbol doesn't exist; risk overriding existing symbol.
+        // @audit-follow-up What side effect would an override cause on the protocol.
         assembly {
             addr := create(0, add(contractBytecode, 0x20), mload(contractBytecode))
         }

@@ -18,5 +18,13 @@ contract TokenFactoryTest is Test {
         vm.prank(owner);
         address tokenAddress = tokenFactory.deployToken("TEST", type(L1Token).creationCode);
         assertEq(tokenFactory.getTokenAddressFromSymbol("TEST"), tokenAddress);
+
+        vm.prank(owner);
+        address tokenAddress2 = tokenFactory.deployToken("TEST", type(L1Token).creationCode);
+        assertEq(tokenFactory.getTokenAddressFromSymbol("TEST"), tokenAddress2);
+        
+        // This fails; address are not the same.
+        // forge test -vv
+        assertEq(tokenAddress, tokenAddress2);
     }
 }
