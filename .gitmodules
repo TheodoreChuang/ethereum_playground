@@ -1,3 +1,12 @@
 [submodule "foundry-23/l6-simple-storage/lib/forge-std"]
 	path = foundry-23/l6-simple-storage/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "codehawks-first-flights/2023-11-Santas-List/lib/forge-std"]
+	path = codehawks-first-flights/2023-11-Santas-List/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "codehawks-first-flights/2023-11-Santas-List/lib/openzeppelin-contracts"]
+	path = codehawks-first-flights/2023-11-Santas-List/lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts
+[submodule "codehawks-first-flights/2023-11-Santas-List/lib/solmate-bad"]
+	path = codehawks-first-flights/2023-11-Santas-List/lib/solmate-bad
+	url = https://github.com/patrickalphac/solmate-bad
