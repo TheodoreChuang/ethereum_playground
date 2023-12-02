@@ -82,6 +82,8 @@ contract SantasList is ERC721, TokenUri {
     uint256 private s_tokenCounter;
     SantaToken private immutable i_santaToken;
 
+    // @audit-follow-up Check this block time
+    // @audit-follow-up What is the checked timezone?
     // This variable is ok even if it's off by 24 hours.
     uint256 public constant CHRISTMAS_2023_BLOCK_TIME = 1_703_480_381;
     // The cost of santa tokens for naughty people to buy presents
@@ -112,7 +114,8 @@ contract SantasList is ERC721, TokenUri {
     }
 
     /* 
-     * @notice Do a first pass on someone if they are naughty or nice. 
+     * @notice Do a first pass on someone if they are naughty or nice.
+     * @audit-issue [checkList is callable by non-Santa] Does not have 'onlySanta' modifier but should accounting to the docs.
      * Only callable by santa
      * 
      * @param person The person to check
@@ -170,6 +173,7 @@ contract SantasList is ERC721, TokenUri {
      * @dev You'll first need to approve the SantasList contract to spend your SantaTokens.
      */
     function buyPresent(address presentReceiver) external {
+        // @audit-issue [Incorrect present cost] i_santaToken.mint only burns 1e18 but PURCHASED_PRESENT_COST and docs note cost should be 2e18.
         i_santaToken.burn(presentReceiver);
         _mintAndIncrement();
     }
@@ -178,6 +182,7 @@ contract SantasList is ERC721, TokenUri {
                           INTERNAL AND PRIVATE
     //////////////////////////////////////////////////////////////*/
     function _mintAndIncrement() private {
+        // @audit-follow-up Any issues incrementing tokenID with `++`?
         _safeMint(msg.sender, s_tokenCounter++);
     }
 
