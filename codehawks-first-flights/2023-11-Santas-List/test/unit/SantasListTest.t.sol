@@ -27,6 +27,13 @@ contract SantasListTest is Test {
         assertEq(uint256(santasList.getNaughtyOrNiceOnce(user)), uint256(SantasList.Status.NICE));
     }
 
+    // - @audit-issue [checkList is callable by non-Santa]
+    function testNoSantaCheckList() public {
+        vm.prank(user);
+        santasList.checkList(user, SantasList.Status.EXTRA_NICE);
+        assertEq(uint256(santasList.getNaughtyOrNiceOnce(user)), uint256(SantasList.Status.EXTRA_NICE));
+    }
+
     function testCheckListTwice() public {
         vm.startPrank(santa);
         santasList.checkList(user, SantasList.Status.NICE);
@@ -116,9 +123,15 @@ contract SantasListTest is Test {
 
         vm.startPrank(user);
         santaToken.approve(address(santasList), 1e18);
+        
         santasList.collectPresent();
+
+        // 1. Token balance is 1e18. Expected amount to mint is not documented.
+        assertEq(santaToken.balanceOf(user), 1e18);
+        // 2. buyPresent burns 1e18. But PURCHASED_PRESENT_COST and documents note cost should be 2e18.
         santasList.buyPresent(user);
         assertEq(santasList.balanceOf(user), 2);
+        // 3. 1e18 were burnt as the cost.
         assertEq(santaToken.balanceOf(user), 0);
         vm.stopPrank();
     }

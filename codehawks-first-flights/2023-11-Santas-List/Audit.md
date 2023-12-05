@@ -1,11 +1,11 @@
-## Goals
+# Goals
 
 - Who is Santa?
 - How to get on the Nice and Extra Nice list?
 - How to get on the Naughty list?
 - How to get on the Unknown list?
 
-## Notes
+# Notes
 
 - Understand the state machine of `Status`.
   - Can someone go from Naughty to Nice? or vice versa?
@@ -18,12 +18,110 @@
   - I don't think any changes were made to solmate's ERC721.
 - Review the purpose of the Christmas date. What timezone? Any way to cheat this?
 
-## Reviewed
+# Reviewed
 
 - SantaToken contract seems okay.
   - Mint to and burns from 1e18 tokens.
 
-## Findings
+# Findings
 
-- @audit-issue Medium? [checkList is callable by non-Santa] Does not have 'onlySanta' modifier but should accounting to the docs.
-- @audit-issue Medium? [Incorrect present cost] i_santaToken.mint only burns 1e18 but PURCHASED_PRESENT_COST suggest cost should be 2e18. But the Extra Nice reward is also 1e18. It is not documented but if the expectation that one Extra Nice person can gift one other person than the behaviour is still maintained.
+## Title: CheckList is callable by non-Santa
+
+### Severity
+
+Medium
+
+### Link
+
+- https://github.com/Cyfrin/2023-11-Santas-List/blob/6627a6387adab89ae2ba2e82b38296723261c08a/src/SantasList.sol#L121
+
+#### Findings:
+
+#### Summary
+
+Any is able to call `checkList` function and set the `status` of any address.
+
+#### Vulnerability Details
+
+Anyone is able to call `checkList` function and set the `status` of any address. This may influence the status Santa sets in `checkTwice` if Santa is referencing the first list.
+
+##### POC
+
+```
+function testNoSantaCheckList() public {
+  vm.prank(user);
+  santasList.checkList(user, SantasList.Status.EXTRA_NICE);
+  assertEq(uint256(santasList.getNaughtyOrNiceOnce(user)), uint256(SantasList.Status.EXTRA_NICE));
+}
+```
+
+#### Impact
+
+The status of an address may not be what Santa expects because anyone can update any addresses's status.
+
+#### Tools Used
+
+Unit test.
+
+#### Recommendations
+
+Add the existing `onlySanta` modifier to the `checkList` function.
+
+## Title: Incorrect Present Cost
+
+## Severity
+
+Low
+
+## Link
+
+https://github.com/Cyfrin/2023-11-Santas-List/blob/6627a6387adab89ae2ba2e82b38296723261c08a/src/SantaToken.sol#L32
+
+# Findings:
+
+#### Summary
+
+The implementation's token cost to `buyPresent()` is 1e18 but should be 2e18 according to the documentations and indicated by the value of the `PURCHASED_PRESENT_COST` variable.
+
+#### Vulnerability Details
+
+If the expectation is that each "Extra Nice" user can buy one present for a user then the smart contract is behaving as expected. The issue is that the documentation and the unused variable `PURCHASED_PRESENT_COST` is incorrect. The amount of token that should be minted has not been documented.
+
+##### POC
+
+```
+function testBuyPresent() public {
+    vm.startPrank(santa);
+    santasList.checkList(user, SantasList.Status.EXTRA_NICE);
+    santasList.checkTwice(user, SantasList.Status.EXTRA_NICE);
+    vm.stopPrank();
+
+    vm.warp(santasList.CHRISTMAS_2023_BLOCK_TIME() + 1);
+
+    vm.startPrank(user);
+    santaToken.approve(address(santasList), 1e18);
+
+    santasList.collectPresent();
+
+    // 1. Token balance is 1e18. Expected amount to mint is not documented.
+    assertEq(santaToken.balanceOf(user), 1e18);
+    // 2. buyPresent burns 1e18. But PURCHASED_PRESENT_COST and documents note cost should be 2e18.
+    santasList.buyPresent(user);
+    assertEq(santasList.balanceOf(user), 2);
+    // 3. 1e18 were burnt as the cost.
+    assertEq(santaToken.balanceOf(user), 0);
+    vm.stopPrank();
+}
+```
+
+#### Impact
+
+Depends on expected behaviour.
+
+#### Tools Used
+
+Unit test.
+
+#### Recommendations
+
+If the expectation is that each "Extra Nice" user can buy one present then update the mint and burn amounts to 2e18 in the `SantaToken` contract. These amounts could also be refactor into contract arguments rather than being hard keyed to increase the resusability of this contract. Alternative the documentation and `PURCHASED_PRESENT_COST` could be update to reflect the actual amounts of 1e18.
