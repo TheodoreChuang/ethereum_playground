@@ -99,6 +99,26 @@ contract SantasListTest is Test {
         vm.stopPrank();
     }
 
+    function testCollectPresentNiceWithoutChecks() public {
+        vm.startPrank(santa);
+        assertEq(
+            uint256(santasList.getNaughtyOrNiceOnce(user)),
+            uint256(SantasList.Status.NICE)
+        );
+        assertEq(
+            uint256(santasList.getNaughtyOrNiceTwice(user)),
+            uint256(SantasList.Status.NICE)
+        );
+        vm.stopPrank();
+
+        vm.warp(santasList.CHRISTMAS_2023_BLOCK_TIME() + 1);
+
+        vm.startPrank(user);
+        santasList.collectPresent();
+        assertEq(santasList.balanceOf(user), 1);
+        vm.stopPrank();
+    }
+
     function testCollectPresentExtraNice() public {
         vm.startPrank(santa);
         santasList.checkList(user, SantasList.Status.EXTRA_NICE);

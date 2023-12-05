@@ -67,6 +67,85 @@ Manual review.
 
 Add the existing `onlySanta` modifier to the `checkList` function.
 
+## Title: Everyone Can Collect "Nice" Present If Unchecked
+
+### Severity
+
+High
+
+### Link
+
+- https://github.com/Cyfrin/2023-11-Santas-List/blob/6627a6387adab89ae2ba2e82b38296723261c08a/src/SantasList.sol#L70
+
+#### Findings:
+
+#### Summary
+
+Anyone is able to collect the "Nice" present if Santa has not checked their status to something other than `Nice`.
+
+#### Vulnerability Details
+
+The default value for enums in Solidity is the first value. With current order of the enum `Status`, all address in the `s_theListCheckedOnce` and `s_theListCheckedTwice` mappings have the default value of `Nice` enabling all addresses that have not been checked to a different status to later collect a present.
+
+```
+// Current implementation
+enum Status {
+    NICE,
+    EXTRA_NICE,
+    NAUGHTY,
+    NOT_CHECKED_TWICE
+}
+
+mapping(address person => Status naughtyOrNice) private s_theListCheckedOnce;
+mapping(address person => Status naughtyOrNice) private s_theListCheckedTwice;
+```
+
+##### POC
+
+```
+function testCollectPresentNiceWithoutChecks() public {
+    vm.startPrank(santa);
+    assertEq(
+        uint256(santasList.getNaughtyOrNiceOnce(user)),
+        uint256(SantasList.Status.NICE)
+    );
+    assertEq(
+        uint256(santasList.getNaughtyOrNiceTwice(user)),
+        uint256(SantasList.Status.NICE)
+    );
+    vm.stopPrank();
+
+    vm.warp(santasList.CHRISTMAS_2023_BLOCK_TIME() + 1);
+
+    vm.startPrank(user);
+    santasList.collectPresent();
+    assertEq(santasList.balanceOf(user), 1);
+    vm.stopPrank();
+}
+```
+
+#### Impact
+
+All addresses that have not been checked to a status other than `Nice` can collect a present after `CHRISTMAS_2023_BLOCK_TIME`.
+
+#### Tools Used
+
+Manual review.
+
+#### Recommendations
+
+Change to order of the enum's values so that the first value is a sensible default.
+
+```
+// Sensible default for the first value.
+enum Status {
+    NOT_CHECKED,
+    NICE,
+    EXTRA_NICE,
+    NAUGHTY,
+}
+```
+
 ## Title: Incorrect Present Cost
 
 ## Severity

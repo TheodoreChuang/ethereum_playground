@@ -66,18 +66,18 @@ contract SantasList is ERC721, TokenUri {
     /*//////////////////////////////////////////////////////////////
                                  TYPES
     //////////////////////////////////////////////////////////////*/
-    enum Status {
-        NICE,
-        EXTRA_NICE,
-        NAUGHTY,
-        NOT_CHECKED_TWICE
-    }
+enum Status {
+    NICE,
+    EXTRA_NICE,
+    NAUGHTY,
+    NOT_CHECKED_TWICE
+}
 
     /*//////////////////////////////////////////////////////////////
                             STATE VARIABLES
     //////////////////////////////////////////////////////////////*/
-    mapping(address person => Status naughtyOrNice) private s_theListCheckedOnce;
-    mapping(address person => Status naughtyOrNice) private s_theListCheckedTwice;
+mapping(address person => Status naughtyOrNice) private s_theListCheckedOnce;
+mapping(address person => Status naughtyOrNice) private s_theListCheckedTwice;
     address private immutable i_santa;
     uint256 private s_tokenCounter;
     SantaToken private immutable i_santaToken;
