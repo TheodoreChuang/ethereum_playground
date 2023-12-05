@@ -10,7 +10,7 @@
 - Understand the state machine of `Status`.
   - Can someone go from Naughty to Nice? or vice versa?
   - A: There is no state machine. Target state is an input.
-- What happens if someone get checked more than twice?
+- ~~What happens if someone get checked more than twice?~~
 - Check permissioning.
 - Any issues if an address mints a NFT and then receives one? Or vice versa?
 - Review solmate, especially review the modifications.
@@ -271,3 +271,35 @@ Manual review.
 #### Recommendations
 
 Remove the `if` block added from lines 89 to 96 to restore the token to the ERC20 standard.
+
+## Title: Incorrect Time Set For Christmas
+
+## Severity
+
+High
+
+## Link
+
+- https://github.com/Cyfrin/2023-11-Santas-List/blob/6627a6387adab89ae2ba2e82b38296723261c08a/src/SantasList.sol#L86C6-L86C6
+
+# Findings:
+
+#### Summary
+
+No one will be able to collect their present at the expected time of Christmas 2023.
+
+#### Vulnerability Details
+
+The configured value of `CHRISTMAS_2023_BLOCK_TIME` is `1_703_480_381`. This block is estimated to be included around August 18, 2038. This estimate was provided by [Arbiscan](https://arbiscan.io/block/countdown/1703480381).
+
+#### Impact
+
+No one can collect their presents at the expect time.
+
+#### Tools Used
+
+Manual review.
+
+#### Recommendations
+
+Set the correct value for `CHRISTMAS_2023_BLOCK_TIME`. Or consider alternative approaches to triggering this condition.
