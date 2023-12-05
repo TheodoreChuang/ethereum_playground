@@ -61,7 +61,7 @@ The status of an address may not be what Santa expects because anyone can update
 
 #### Tools Used
 
-Unit test.
+Manual review.
 
 #### Recommendations
 
@@ -120,8 +120,75 @@ Depends on expected behaviour.
 
 #### Tools Used
 
-Unit test.
+Manual review.
 
 #### Recommendations
 
 If the expectation is that each "Extra Nice" user can buy one present then update the mint and burn amounts to 2e18 in the `SantaToken` contract. These amounts could also be refactor into contract arguments rather than being hard keyed to increase the resusability of this contract. Alternative the documentation and `PURCHASED_PRESENT_COST` could be update to reflect the actual amounts of 1e18.
+
+## Title: Santa Can Steal Tokens
+
+## Severity
+
+High
+
+## Link
+
+- https://github.com/PatrickAlphaC/solmate-bad/blob/c3877e5571461c61293503f45fc00959fff4ebba/src/tokens/ERC20.sol#L89
+- https://github.com/PatrickAlphaC/solmate-bad/commit/c3877e5571461c61293503f45fc00959fff4ebba#diff-677ee1b0f6d434a9aced18932e55d00e7d05a7ff4a487cc119790d328b5d7a04
+
+# Findings:
+
+#### Summary
+
+Santa is able to steal anyone's tokens and transfer them to any address.
+
+#### Vulnerability Details
+
+The modifications to the inherited solmate-bad ERC20 does not conform to the expected "approval" flow if the `msg.sender` is Santa. Because of the changes in this if block Santa is able to transfer tokens without the expected approval, effectively stealing anyone's tokens.
+
+##### POC
+
+```
+function testSantaStealToken() public {
+    // Set up.
+    // Address hard coded in ERC20 contract, https://github.com/PatrickAlphaC/solmate-bad/blob/c3877e5571461c61293503f45fc00959fff4ebba/src/tokens/ERC20.sol#L89
+    address santa = 0x815F577F1c1bcE213c012f166744937C889DAF17;
+    vm.startPrank(santa);
+    santasList.checkList(user, SantasList.Status.EXTRA_NICE);
+    santasList.checkTwice(user, SantasList.Status.EXTRA_NICE);
+    vm.stopPrank();
+
+    vm.warp(santasList.CHRISTMAS_2023_BLOCK_TIME() + 1);
+
+    vm.startPrank(user);
+    // santaToken.approve(address(santasList), 1e18);
+    santasList.collectPresent();
+    assertEq(santaToken.balanceOf(user), 1e18);
+    vm.stopPrank();
+
+    assertEq(santaToken.balanceOf(santa), 0);
+
+    // Test.
+    vm.startPrank(santa);
+    santaToken.transferFrom(user, santa, 1e18);
+
+    // Verify.
+    //  Tokens stolen, no approval was provided
+    assertEq(santaToken.balanceOf(user), 0);
+    assertEq(santaToken.balanceOf(santa), 1e18);
+    vm.stopPrank();
+}
+```
+
+#### Impact
+
+Santa can steal all tokens.
+
+#### Tools Used
+
+Manual review.
+
+#### Recommendations
+
+Remove the `if` block added from lines 89 to 96 to restore the token to the ERC20 standard.

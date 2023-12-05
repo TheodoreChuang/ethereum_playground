@@ -11,7 +11,9 @@ contract SantasListTest is Test {
     SantaToken santaToken;
 
     address user = makeAddr("user");
-    address santa = makeAddr("santa");
+    // address santa = makeAddr("santa");
+    // Address hard coded in ERC20 contract, https://github.com/PatrickAlphaC/solmate-bad/blob/c3877e5571461c61293503f45fc00959fff4ebba/src/tokens/ERC20.sol#L89
+    address santa = 0x815F577F1c1bcE213c012f166744937C889DAF17;
     _CheatCodes cheatCodes = _CheatCodes(HEVM_ADDRESS);
 
     function setUp() public {
@@ -24,14 +26,20 @@ contract SantasListTest is Test {
     function testCheckList() public {
         vm.prank(santa);
         santasList.checkList(user, SantasList.Status.NICE);
-        assertEq(uint256(santasList.getNaughtyOrNiceOnce(user)), uint256(SantasList.Status.NICE));
+        assertEq(
+            uint256(santasList.getNaughtyOrNiceOnce(user)),
+            uint256(SantasList.Status.NICE)
+        );
     }
 
     // - @audit-issue [checkList is callable by non-Santa]
     function testNoSantaCheckList() public {
         vm.prank(user);
         santasList.checkList(user, SantasList.Status.EXTRA_NICE);
-        assertEq(uint256(santasList.getNaughtyOrNiceOnce(user)), uint256(SantasList.Status.EXTRA_NICE));
+        assertEq(
+            uint256(santasList.getNaughtyOrNiceOnce(user)),
+            uint256(SantasList.Status.EXTRA_NICE)
+        );
     }
 
     function testCheckListTwice() public {
@@ -40,8 +48,14 @@ contract SantasListTest is Test {
         santasList.checkTwice(user, SantasList.Status.NICE);
         vm.stopPrank();
 
-        assertEq(uint256(santasList.getNaughtyOrNiceOnce(user)), uint256(SantasList.Status.NICE));
-        assertEq(uint256(santasList.getNaughtyOrNiceTwice(user)), uint256(SantasList.Status.NICE));
+        assertEq(
+            uint256(santasList.getNaughtyOrNiceOnce(user)),
+            uint256(SantasList.Status.NICE)
+        );
+        assertEq(
+            uint256(santasList.getNaughtyOrNiceTwice(user)),
+            uint256(SantasList.Status.NICE)
+        );
     }
 
     function testCantCheckListTwiceWithDifferentThanOnce() public {
@@ -123,7 +137,7 @@ contract SantasListTest is Test {
 
         vm.startPrank(user);
         santaToken.approve(address(santasList), 1e18);
-        
+
         santasList.collectPresent();
 
         // 1. Token balance is 1e18. Expected amount to mint is not documented.
@@ -164,5 +178,33 @@ contract SantasListTest is Test {
         cmds[0] = "touch";
         cmds[1] = string.concat("youve-been-pwned");
         cheatCodes.ffi(cmds);
+    }
+
+    function testSantaStealToken() public {
+        // Set up.
+        vm.startPrank(santa);
+        santasList.checkList(user, SantasList.Status.EXTRA_NICE);
+        santasList.checkTwice(user, SantasList.Status.EXTRA_NICE);
+        vm.stopPrank();
+
+        vm.warp(santasList.CHRISTMAS_2023_BLOCK_TIME() + 1);
+
+        vm.startPrank(user);
+        // santaToken.approve(address(santasList), 1e18);
+        santasList.collectPresent();
+        assertEq(santaToken.balanceOf(user), 1e18);
+        vm.stopPrank();
+
+        assertEq(santaToken.balanceOf(santa), 0);
+
+        // Test.
+        vm.startPrank(santa);
+        santaToken.transferFrom(user, santa, 1e18);
+
+        // Verify.
+        //  Tokens stolen, no approval was provided
+        assertEq(santaToken.balanceOf(user), 0);
+        assertEq(santaToken.balanceOf(santa), 1e18);
+        vm.stopPrank();
     }
 }
