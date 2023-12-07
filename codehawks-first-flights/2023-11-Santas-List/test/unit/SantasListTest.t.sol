@@ -134,6 +134,39 @@ contract SantasListTest is Test {
         vm.stopPrank();
     }
 
+    function testCannotCollectPresentIfGifted() public {
+        // Set up.
+        address userCollector = makeAddr("userCollector");
+        address userGifter = makeAddr("userGifter");
+
+        vm.startPrank(santa);
+        santasList.checkList(userCollector, SantasList.Status.NICE);
+        santasList.checkTwice(userCollector, SantasList.Status.NICE);
+        santasList.checkList(userGifter, SantasList.Status.EXTRA_NICE);
+        santasList.checkTwice(userGifter, SantasList.Status.EXTRA_NICE);
+        vm.stopPrank();
+
+        vm.warp(santasList.CHRISTMAS_2023_BLOCK_TIME() + 1);
+
+        vm.startPrank(userGifter);
+        santasList.collectPresent();
+        santasList.buyPresent(userGifter);
+        assertEq(santasList.balanceOf(userGifter), 2);
+
+        santasList.transferFrom(userGifter, userCollector, 0);
+        assertEq(santasList.balanceOf(userGifter), 1);
+        vm.stopPrank();
+
+        // Test.
+        vm.startPrank(userCollector);
+        vm.expectRevert();
+        santasList.collectPresent();
+        vm.stopPrank();
+
+        // Verify.
+        assertEq(santasList.balanceOf(userCollector), 1);
+    }
+
     function testCantCollectPresentUnlessAtLeastNice() public {
         vm.startPrank(santa);
         santasList.checkList(user, SantasList.Status.NAUGHTY);

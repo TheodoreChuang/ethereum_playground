@@ -303,3 +303,72 @@ Manual review.
 #### Recommendations
 
 Set the correct value for `CHRISTMAS_2023_BLOCK_TIME`. Or consider alternative approaches to triggering this condition.
+
+## Title: Cannot Collect Present If Gifted
+
+## Severity
+
+Medium
+
+## Link
+
+- https://github.com/Cyfrin/2023-11-Santas-List/blob/6627a6387adab89ae2ba2e82b38296723261c08a/src/SantasList.sol#L151
+
+# Findings:
+
+#### Summary
+
+A user cannot collect their present if they already have one because they have been gifted one.
+
+#### Vulnerability Details
+
+A user cannot collect their present if they already have one because they have been gifted one.
+
+##### POC
+
+```
+function testCannotCollectPresentIfGifted() public {
+    // Set up.
+    address userCollector = makeAddr("userCollector");
+    address userGifter = makeAddr("userGifter");
+
+    vm.startPrank(santa);
+    santasList.checkList(userCollector, SantasList.Status.NICE);
+    santasList.checkTwice(userCollector, SantasList.Status.NICE);
+    santasList.checkList(userGifter, SantasList.Status.EXTRA_NICE);
+    santasList.checkTwice(userGifter, SantasList.Status.EXTRA_NICE);
+    vm.stopPrank();
+
+    vm.warp(santasList.CHRISTMAS_2023_BLOCK_TIME() + 1);
+
+    vm.startPrank(userGifter);
+    santasList.collectPresent();
+    santasList.buyPresent(userGifter);
+    assertEq(santasList.balanceOf(userGifter), 2);
+
+    santasList.transferFrom(userGifter, userCollector, 0);
+    assertEq(santasList.balanceOf(userGifter), 1);
+    vm.stopPrank();
+
+    // Test.
+    vm.startPrank(userCollector);
+    vm.expectRevert();
+    santasList.collectPresent();
+    vm.stopPrank();
+
+    // Verify.
+    assertEq(santasList.balanceOf(userCollector), 1);
+}
+```
+
+#### Impact
+
+A user cannot collect their present if they already have one because they have been gifted one.
+
+#### Tools Used
+
+Manual review.
+
+#### Recommendations
+
+Track whether users have collected instead of checking their balance.
